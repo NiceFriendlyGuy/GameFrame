@@ -1,0 +1,15 @@
+<div>
+    <p>poll works!</p>
+
+    @for(poll of polls; track poll._id){
+        <li>{{poll.name}} {{poll._id}}</li>
+    }
+
+    <div class="question">
+        <h2>This is a deep and polarizing question from {{polls[1].name}} {{polls[1]._id}}</h2>
+    </div>
+    <div class="poll-buttons">
+        <button>Answer 1</button>
+        <button>Answer 2</button>
+    </div>
+</div>
