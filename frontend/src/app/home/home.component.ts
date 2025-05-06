@@ -15,12 +15,20 @@ export class HomeComponent {
   private pollService = inject(PollService);
   polls: any[] = [];
 
+  latestPollId: string | null = null;
+
 
   constructor(private router: Router) {}
 
   ngOnInit(): void {
     this.pollService.getPolls().subscribe(data => {
       this.polls = data;
+    });
+    this.pollService.getLatestPoll().subscribe(poll => {
+      if (poll && poll._id) {
+        this.latestPollId = poll._id;  // Store it as a string
+        console.log('Latest poll ID:', this.latestPollId);
+      }
     });
   }
 

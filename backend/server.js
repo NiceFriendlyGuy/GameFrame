@@ -49,6 +49,37 @@ app.post('/api/entries', async (req, res) => {
   }
 });
 
+// Route to fetch the latest question by date
+app.get('/api/entries/latest', async (req, res) => {
+  try {
+    const latestEntry = await Entry.findOne().sort({ date: -1 }); // Sort descending by date
+    if (!latestEntry) {
+      return res.status(404).json({ message: 'No entries found.' });
+    }
+    res.json(latestEntry);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// Route to fetch a specific entry by ID
+app.get('/api/entries/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const entry = await Entry.findById(id);
+    if (!entry) {
+      return res.status(404).json({ message: 'Entry not found.' });
+    }
+    res.json(entry);
+  } catch (err) {
+    res.status(500).json({ message: 'Invalid ID or server error.' });
+  }
+});
+
+
+
+
 
 app.listen(port, () => {
   console.log(`✅ Server running at http://localhost:${port}`);

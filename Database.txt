@@ -1,0 +1,14 @@
+[
+    {
+        "_id": "681a4d99918101dce2d861e3",
+        "name": "God of War",
+        "question": "Which game is shown in this screenshot?",
+        "correctAnswer": "God of War (2018)",
+        "answer1": "God of War III",
+        "answer2": "Assassin's Creed Odyssey",
+        "answer3": "The Last of Us Part II",
+        "answer4": "God of War (2018)",
+        "date": "2025-05-06T00:00:00.000Z",
+        "image": "https://yourdomain.com/images/god-of-war-2018-1.jpg"
+    }
+]

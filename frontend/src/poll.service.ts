@@ -16,4 +16,13 @@ export class PollService {
   getPolls(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
   }
+
+  // Method to fetch a specific poll by its ID
+  getPollById(id: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
+
+  getLatestPoll(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/latest`);
+  }
 }
