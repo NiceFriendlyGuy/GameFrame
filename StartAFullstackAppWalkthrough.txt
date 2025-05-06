@@ -1,0 +1,36 @@
+Create backend folder
+
+Create docker-compose.yml, Dockerfile and server.js in backend folder
+
+Initialize npm to create package.json
+    npm init -y
+
+Install express
+    npm install express
+
+In root folder, install angular
+    npm install -g @angular/cli
+
+From root folder, create angular app with a frontend folder 
+    ng new frontend --directory frontend
+
+Create, build and run a new container that will use parameters from the docker files
+    docker compose up -d --build
+
+Check if running
+    docker ps
+
+(optional) Connect to container
+    docker exec -it <Container-Name> /bin/bash (or docker exec -it <container-name> /bin/sh if bash shell is unavailable)
+
+From frontend folder, start frontend
+    npm start or ng serve (ng serve being the better/more explicit version)
+
+
+
+Creating Component
+	ng generate component <Component-Name>  or ng g c <Component-Name>
+
+Creating Service
+	ng generate service <Service-Name> or ng g s <Service-Name>
+
