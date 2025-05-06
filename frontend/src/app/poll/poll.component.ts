@@ -10,12 +10,26 @@ import { HttpClientModule } from '@angular/common/http';
   styleUrl: './poll.component.css'
 })
 export class PollComponent {
+  pollId: string | null = null;
+
   private pollService = inject(PollService);
   polls: any[] = [];
+
+  answered = false;
+  selectedAnswer = 0;
+  correctAnswer = 1;
 
   ngOnInit(): void {
     this.pollService.getPolls().subscribe(data => {
       this.polls = data;
     });
   }
+
+  selectAnswer(answerNum: number): void {
+    console.log("Clicked an answer" + answerNum);
+    this.answered = true;
+    this.selectedAnswer = answerNum;
+  }
+
+  
 }

@@ -1,14 +1,23 @@
 import { Routes } from '@angular/router';
-import { PollComponent } from './poll/poll.component'; // Adjust path if needed
+import { PollComponent } from './poll/poll.component';
+import { HomeComponent } from './home/home.component';
+import { QuestionsComponent } from './questions/questions.component';
 
 export const routes: Routes = [
   {
     path: '',
-    component: PollComponent // 👈 default route
+    component: HomeComponent
   },
   {
-    path: 'poll',
+    path: 'poll/:id',
     component: PollComponent
   },
-  // Add other routes here if needed
+  {
+    path: 'questions',
+    component: QuestionsComponent
+  },
+  {
+    path: 'home',
+    component: HomeComponent
+  }
 ];

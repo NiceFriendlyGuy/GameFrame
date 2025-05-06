@@ -18,8 +18,7 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 // Define schema + model
 const entrySchema = new mongoose.Schema({
-  title: String,
-  content: String
+  name: String,
 });
 
 const Entry = mongoose.model('Entry', entrySchema, 'entries');  // 3rd param = collection name
@@ -33,6 +32,23 @@ app.get('/api/entries', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+app.post('/api/entries', async (req, res) => {
+  const { name } = req.body;
+
+  if (!name) {
+    return res.status(400).json({ message: 'Name is required.' });
+  }
+
+  try {
+    const newEntry = new Entry({ name });
+    const savedEntry = await newEntry.save();
+    res.status(201).json(savedEntry);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`✅ Server running at http://localhost:${port}`);

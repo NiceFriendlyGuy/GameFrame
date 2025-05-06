@@ -1,0 +1,14 @@
+<p>home works!</p>
+
+<div class="title-container">
+    <h1>This is the title of the app</h1>
+</div>
+
+@for(poll of polls; track poll?._id){
+    <li>{{poll?.name}} {{poll?._id}}</li>
+}
+
+
+<div class="buttons-container">
+    <button (click)="navigateTo('poll/' + todayID)">Answer today's question</button>
+</div>
