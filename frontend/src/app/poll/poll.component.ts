@@ -27,10 +27,18 @@ export class PollComponent {
   selectedAnswer = "";
   correctAnswer = "";
   question ="";
+  alreadyAnswered = false;
+  
 
   ngOnInit(): void {
     this.pollId = this.route.snapshot.paramMap.get('id');
 
+    if (this.pollService.getAnswerStatus(this.pollId!) !== 'unanswered') {
+      this.alreadyAnswered = true;
+      this.answered = true;
+    }
+
+    
     if (this.pollId) {
       this.pollService.getPollById(this.pollId).subscribe(data => {
         this.poll = data;
@@ -53,10 +61,18 @@ export class PollComponent {
   }
 
   selectAnswer(answerSelected: string): void {
+    if (!this.alreadyAnswered) {
+      this.answered = true;
+      this.selectedAnswer = answerSelected;
+      this.pollService.markAsAnswered(this.pollId!, this.selectedAnswer, this.correctAnswer);
+      this.alreadyAnswered = true;
+      // continue with displaying results or posting to backend
+    }
     console.log("Clicked an answer " + answerSelected);
-    this.answered = true;
-    this.selectedAnswer = answerSelected;
+    
 
     // You can add logic here to check if the selected answer is correct
   }
+
+  
 }

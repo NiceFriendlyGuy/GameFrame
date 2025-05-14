@@ -10,5 +10,17 @@
         "answer4": "God of War (2018)",
         "date": "2025-05-06T00:00:00.000Z",
         "image": "https://yourdomain.com/images/god-of-war-2018-1.jpg"
-    }
+    },
+    
+    {
+    "name": "Red Dead Redemption 2",
+    "question": "Which game is depicted in this image?",
+    "correctAnswer": "Red Dead Redemption 2",
+    "answer1": "Call of Juarez: Gunslinger",
+    "answer2": "Red Dead Redemption",
+    "answer3": "Red Dead Redemption 2",
+    "answer4": "The Witcher 3: Wild Hunt",
+    "date": "2025-05-07T00:00:00.000Z",
+    "image": "https://yourdomain.com/images/red-dead-redemption-2-1.jpg"
+}
 ]

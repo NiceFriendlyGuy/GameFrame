@@ -25,4 +25,30 @@ export class PollService {
   getLatestPoll(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/latest`);
   }
+
+  private storageKey = 'answeredQuestions';
+
+  // Save the selected answer
+markAsAnswered(pollId: string, selectedAnswer: string, correctAnswer: string): void {
+  const answered = this.getAnsweredQuestions();
+  answered[pollId] = {
+    selected: selectedAnswer,
+    correct: correctAnswer
+  };
+  localStorage.setItem(this.storageKey, JSON.stringify(answered));
+}
+
+getAnsweredQuestions(): Record<string, { selected: string, correct: string }> {
+  return JSON.parse(localStorage.getItem(this.storageKey) || '{}');
+}
+
+getAnswerStatus(pollId: string): 'correct' | 'incorrect' | 'unanswered' {
+  const answers = this.getAnsweredQuestions();
+  if (!answers[pollId]) return 'unanswered';
+  return answers[pollId].selected === answers[pollId].correct ? 'correct' : 'incorrect';
+}
+
+  clearAnswered(): void {
+    localStorage.removeItem(this.storageKey);    
+  }
 }

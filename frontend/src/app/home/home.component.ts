@@ -36,4 +36,8 @@ export class HomeComponent {
     console.log("Going to " + page);
     this.router.navigate([page]);
   }
+
+  clearAllAnwsers(){
+    this.pollService.clearAnswered();
+  }
 }

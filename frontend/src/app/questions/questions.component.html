@@ -1,6 +1,8 @@
 <p>questions works!</p>
-<div class = "button-list-container">
+<div class="button-list-container">
     @for(poll of polls; track poll?._id){
-        <button (click)="navigateTo('poll/' + poll._id)">{{poll?.name}}</button>
+      <button (click)="navigateTo('poll/' + poll._id)">
+        {{ poll?.name }} {{ getEmojiStatus(poll._id) }}
+      </button>
     }
-</div>
+  </div>
