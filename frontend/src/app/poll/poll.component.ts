@@ -84,6 +84,17 @@ export class PollComponent {
     // You can add logic here to check if the selected answer is correct
   }
 
+
+  //image display
+  selectedImage: string | null = null;
+
+  openImage(url: string) {
+    this.selectedImage = url;
+  }
+
+  closeImage() {
+    this.selectedImage = null;
+  }
   
 
   

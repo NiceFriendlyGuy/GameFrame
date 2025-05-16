@@ -24,9 +24,10 @@ async function getAccessToken() {
 async function fetchGameByName(gameName) {
   const token = await getAccessToken();
 
-  const response = await axios.post(
+  // Step 1: Get game ID and name
+  const gameRes = await axios.post(
     'https://api.igdb.com/v4/games',
-    `search "${gameName}"; fields name, cover.url; limit 1;`,
+    `search "${gameName}"; fields id, name; limit 1;`,
     {
       headers: {
         'Client-ID': CLIENT_ID,
@@ -36,19 +37,44 @@ async function fetchGameByName(gameName) {
     }
   );
 
-  const game = response.data[0];
-  
-  // Modify the image URL to get a higher quality version
-  const imageUrl = game?.cover?.url
-    ? 'https:' + game.cover.url.replace('t_thumb', 't_1080p')
-    : null;
+  const game = gameRes.data[0];
+  if (!game) throw new Error('Game not found');
+  const gameId = game.id;
 
-  // Return a cleaned-up object instead of the raw IGDB response
+  // Helper to fetch images from IGDB endpoints
+  const fetchImages = async (endpoint) => {
+    const res = await axios.post(
+      `https://api.igdb.com/v4/${endpoint}`,
+      `fields url, image_id; where game = ${gameId};`,
+      {
+        headers: {
+          'Client-ID': CLIENT_ID,
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'text/plain'
+        }
+      }
+    );
+    return res.data.map(img => ({
+      url: 'https:' + img.url.replace('t_thumb', 't_1080p'),
+      id: img.image_id
+    }));
+  };
+
+  // Step 2: Fetch all image types in parallel
+  const [artworks, screenshots, covers] = await Promise.all([
+    fetchImages('artworks'),
+    fetchImages('screenshots'),
+    fetchImages('covers')
+  ]);
+
   return {
-    name: game?.name || 'Unknown',
-    image: imageUrl
+    name: game.name,
+    cover: covers[0]?.url || null,
+    artworks,
+    screenshots
   };
 }
+
 
 
 module.exports = { fetchGameByName };

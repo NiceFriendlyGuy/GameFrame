@@ -1,17 +1,33 @@
 <div class="question-container">
     <p>poll works!</p>
 
-    <!--<h2>{{ game.name }}</h2>-->
-    @if (game) {
-        <h2>{{ game.name }}</h2>
-    } @else {
-        <p>Loading game info...</p>
+   
+
+    <h2>{{ game?.name }}</h2>
+    <img *ngIf="game?.cover" [src]="game.cover" alt="cover" />
+
+    <h3>Artworks</h3>
+    <div class="image-grid">
+        @for (art of game?.artworks; track art.id) {
+        <img [src]="art.url" (click)="openImage(art.url)" [alt]="game.name + ' artwork'" />
+        }
+    </div>
+    
+    @if (selectedImage) {
+    <div class="image-modal" (click)="closeImage()">
+        <img [src]="selectedImage" class="full-image" />
+        <span class="close-btn">×</span>
+    </div>
     }
-    @if (game?.image) {
-        <img class="game-cover" [src]="game.image" [alt]="game.name" class="game-cover" />
-    } @else {
-        <p>Loading game image...</p>
-    }
+
+    
+    <h3>Screenshots</h3>
+    <div class="image-grid">
+        @for (shot of game?.screenshots; track shot.id) {
+        <img [src]="shot.url" (click)="openImage(shot.url)" [alt]="game.name + ' screenshot'" />
+        }
+    </div>
+
 
 
     @for(poll of polls; track poll?._id){
