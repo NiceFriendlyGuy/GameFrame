@@ -51,4 +51,8 @@ getAnswerStatus(pollId: string): 'correct' | 'incorrect' | 'unanswered' {
   clearAnswered(): void {
     localStorage.removeItem(this.storageKey);    
   }
+
+  getGameByName(name: string): Observable<any> {
+    return this.http.get<any>(`http://localhost:3000/api/games/${name}`);
+  }
 }

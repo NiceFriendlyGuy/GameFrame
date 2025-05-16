@@ -6,6 +6,8 @@ const port = 3000;  // Ensure it listens on port 3000
 const cors = require('cors');
 app.use(cors());
 
+const { fetchGameByName } = require('./igdb.service');
+
 // Middleware
 app.use(express.json());
 
@@ -78,7 +80,16 @@ app.get('/api/entries/:id', async (req, res) => {
 });
 
 
-
+//IGDB//
+app.get('/api/games/:name', async (req, res) => {
+  try {
+    const game = await fetchGameByName(req.params.name);
+    res.json(game);
+  } catch (err) {
+    console.error('🔥 IGDB fetch error:', err.response?.data || err.message);
+    res.status(500).json({ message: 'Failed to fetch game' });
+  }
+});
 
 
 app.listen(port, () => {

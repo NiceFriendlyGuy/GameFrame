@@ -16,6 +16,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;    
+    gap: 20px;
 }
 
 
@@ -39,4 +40,12 @@ button:hover {
 button:active {
     transform: translateY(0);
     background-color: #2f68a0;
+}
+
+.clear-button{
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    font-size: medium;
+    padding: 20px;
 }

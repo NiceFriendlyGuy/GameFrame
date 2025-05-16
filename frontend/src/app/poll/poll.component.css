@@ -8,6 +8,11 @@
     align-content: center;
 }
 
+.game-cover{
+    width: 400px;
+    border: 1px solid black;
+}
+
 .question {
     display: flex;
     flex-direction: column;

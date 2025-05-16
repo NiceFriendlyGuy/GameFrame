@@ -1,6 +1,19 @@
 <div class="question-container">
     <p>poll works!</p>
 
+    <!--<h2>{{ game.name }}</h2>-->
+    @if (game) {
+        <h2>{{ game.name }}</h2>
+    } @else {
+        <p>Loading game info...</p>
+    }
+    @if (game?.image) {
+        <img class="game-cover" [src]="game.image" [alt]="game.name" class="game-cover" />
+    } @else {
+        <p>Loading game image...</p>
+    }
+
+
     @for(poll of polls; track poll?._id){
     <li>{{poll?.name}} {{poll?._id}} {{poll.date}}</li>
     }

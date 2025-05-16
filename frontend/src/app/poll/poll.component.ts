@@ -28,6 +28,9 @@ export class PollComponent {
   correctAnswer = "";
   question ="";
   alreadyAnswered = false;
+
+  gameName = 'God of War';
+  game: any = null;
   
 
   ngOnInit(): void {
@@ -44,15 +47,22 @@ export class PollComponent {
         this.poll = data;
         console.log('Fetched poll:', this.poll);
 
-        // Now that the poll is fetched, set the answer1 and correctAnswer values
+        // Now that the poll is fetched, set the values with the data
         this.answer1 = this.poll.answer1;
         this.answer2 = this.poll.answer2;
         this.answer3 = this.poll.answer3;
         this.answer4 = this.poll.answer4;
         this.correctAnswer = this.poll.correctAnswer;
         this.question = this.poll.question;
+        this.gameName = this.poll.name;
+
+        this.pollService.getGameByName(this.gameName).subscribe(gameData => {
+          this.game = gameData;
+        });
       });
     }
+
+
 
     // Fetch all polls if necessary (although you might not need this in this context)
     this.pollService.getPolls().subscribe(data => {
@@ -73,6 +83,8 @@ export class PollComponent {
 
     // You can add logic here to check if the selected answer is correct
   }
+
+  
 
   
 }
