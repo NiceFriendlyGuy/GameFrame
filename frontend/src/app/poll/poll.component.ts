@@ -2,10 +2,11 @@ import { Component, inject } from '@angular/core';
 import { PollService } from '../../poll.service';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router'; // Import ActivatedRoute
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-poll',
+  standalone: true,
   imports: [CommonModule, HttpClientModule],
   templateUrl: './poll.component.html',
   styleUrls: ['./poll.component.css']
@@ -13,6 +14,10 @@ import { ActivatedRoute } from '@angular/router'; // Import ActivatedRoute
 export class PollComponent {
   pollId: string | null = null;
   poll: any;
+
+  searchQuery = '';
+  searchResults: any[] = [];
+  selectedGameFromSearch: any = null;
 
   private pollService = inject(PollService);
   polls: any[] = [];
@@ -26,12 +31,13 @@ export class PollComponent {
   answer4 = "";
   selectedAnswer = "";
   correctAnswer = "";
-  question ="";
+  question = "";
   alreadyAnswered = false;
 
   gameName = 'God of War';
   game: any = null;
-  
+
+  selectedImage: string | null = null;
 
   ngOnInit(): void {
     this.pollId = this.route.snapshot.paramMap.get('id');
@@ -41,13 +47,11 @@ export class PollComponent {
       this.answered = true;
     }
 
-    
     if (this.pollId) {
       this.pollService.getPollById(this.pollId).subscribe(data => {
         this.poll = data;
         console.log('Fetched poll:', this.poll);
 
-        // Now that the poll is fetched, set the values with the data
         this.answer1 = this.poll.answer1;
         this.answer2 = this.poll.answer2;
         this.answer3 = this.poll.answer3;
@@ -62,12 +66,33 @@ export class PollComponent {
       });
     }
 
-
-
-    // Fetch all polls if necessary (although you might not need this in this context)
     this.pollService.getPolls().subscribe(data => {
       this.polls = data;
     });
+  }
+
+  onSearchChange(query: string) {
+    this.searchQuery = query;
+
+    if (query.length < 3) {
+      this.searchResults = [];
+      return;
+    }
+
+    this.pollService.searchGames(query).subscribe({
+      next: results => {
+        this.searchResults = results;
+      },
+      error: err => {
+        console.error('Search error:', err);
+      }
+    });
+  }
+
+  selectGameFromSearch(game: any) {
+    this.selectedGameFromSearch = game;
+    this.searchQuery = game.name;
+    this.searchResults = [];
   }
 
   selectAnswer(answerSelected: string): void {
@@ -76,17 +101,9 @@ export class PollComponent {
       this.selectedAnswer = answerSelected;
       this.pollService.markAsAnswered(this.pollId!, this.selectedAnswer, this.correctAnswer);
       this.alreadyAnswered = true;
-      // continue with displaying results or posting to backend
     }
     console.log("Clicked an answer " + answerSelected);
-    
-
-    // You can add logic here to check if the selected answer is correct
   }
-
-
-  //image display
-  selectedImage: string | null = null;
 
   openImage(url: string) {
     this.selectedImage = url;
@@ -95,7 +112,4 @@ export class PollComponent {
   closeImage() {
     this.selectedImage = null;
   }
-  
-
-  
 }

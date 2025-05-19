@@ -39,6 +39,42 @@
         <img src="giphy.gif" alt="Funny gif">
         <h2>{{question}}</h2>
     </div>
+
+
+    <div class="search-box">
+    <input
+        #inputBox
+        type="text"
+        [value]="searchQuery"
+        (input)="onSearchChange(inputBox.value)"
+        placeholder="Search for a game..."
+        class="search-input"
+    />
+
+
+    @if (searchResults.length > 0) {
+        <ul class="search-results">
+        @for (game of searchResults; track game.id) {
+            <li (click)="selectGameFromSearch(game)">
+            {{ game.name }}
+            </li>
+        }
+        </ul>
+    }
+
+    @if (selectedGameFromSearch) {
+        <div class="game-preview">
+        <p>You selected: {{ selectedGameFromSearch.name }}</p>
+        @if (selectedGameFromSearch.image) {
+            <img [src]="selectedGameFromSearch.image" [alt]="selectedGameFromSearch.name" />
+        }
+        </div>
+    }
+    </div>
+
+
+
+    
     @if(!answered){
     <div class="poll-buttons">
         <button (click)="selectAnswer(answer1)">{{answer1}}</button>

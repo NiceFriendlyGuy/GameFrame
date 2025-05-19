@@ -75,6 +75,36 @@ async function fetchGameByName(gameName) {
   };
 }
 
+async function fetchGamesByQuery(query) {
+  const token = await getAccessToken();
+
+  const response = await axios.post(
+    'https://api.igdb.com/v4/games',
+    `search "${query}"; fields id, name, cover.url; limit 10;`,
+    {
+      headers: {
+        'Client-ID': CLIENT_ID,
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'text/plain'
+      }
+    }
+  );
+
+  return response.data.map(game => ({
+    id: game.id,
+    name: game.name,
+    image: game.cover?.url
+      ? 'https:' + game.cover.url.replace('t_thumb', 't_cover_big')
+      : null
+  }));
+}
 
 
-module.exports = { fetchGameByName };
+
+
+module.exports = {
+  getAccessToken,
+  fetchGamesByQuery,
+  fetchGameByName // ← if you use that too
+};
+
