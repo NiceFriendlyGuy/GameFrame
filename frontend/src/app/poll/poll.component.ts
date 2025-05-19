@@ -12,66 +12,97 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./poll.component.css']
 })
 export class PollComponent {
+  // ─── Dependencies ─────────────────────────────────────────────────────────────
+  private pollService = inject(PollService);
+
+  constructor(private route: ActivatedRoute) {}
+
+  // ─── Poll State ───────────────────────────────────────────────────────────────
   pollId: string | null = null;
   poll: any;
+  polls: any[] = [];
 
+  question = '';
+  answer1 = '';
+  answer2 = '';
+  answer3 = '';
+  answer4 = '';
+  correctAnswer = '';
+  selectedAnswer = '';
+  answered = false;
+  alreadyAnswered = false;
+
+  // ─── Game Metadata ────────────────────────────────────────────────────────────
+  gameName = 'God of War';
+  game: any = null;
+
+  // ─── Image Modal ──────────────────────────────────────────────────────────────
+  selectedImage: string | null = null;
+
+  // ─── Search State ─────────────────────────────────────────────────────────────
   searchQuery = '';
   searchResults: any[] = [];
   selectedGameFromSearch: any = null;
 
-  private pollService = inject(PollService);
-  polls: any[] = [];
-
-  constructor(private route: ActivatedRoute) {}
-
-  answered = false;
-  answer1 = "";
-  answer2 = "";
-  answer3 = "";
-  answer4 = "";
-  selectedAnswer = "";
-  correctAnswer = "";
-  question = "";
-  alreadyAnswered = false;
-
-  gameName = 'God of War';
-  game: any = null;
-
-  selectedImage: string | null = null;
-
+  // ─── Lifecycle ────────────────────────────────────────────────────────────────
   ngOnInit(): void {
-    this.pollId = this.route.snapshot.paramMap.get('id');
+  this.pollId = this.route.snapshot.paramMap.get('id');
 
-    if (this.pollService.getAnswerStatus(this.pollId!) !== 'unanswered') {
+  if (this.pollId) {
+    const status = this.pollService.getAnswerStatus(this.pollId);
+    if (status !== 'unanswered') {
       this.alreadyAnswered = true;
       this.answered = true;
+
+      const stored = this.pollService.getAnsweredQuestions()[this.pollId];
+      this.selectedAnswer = stored?.selected || '';
     }
 
-    if (this.pollId) {
-      this.pollService.getPollById(this.pollId).subscribe(data => {
-        this.poll = data;
-        console.log('Fetched poll:', this.poll);
+    this.pollService.getPollById(this.pollId).subscribe(data => {
+      this.poll = data;
+      console.log('Fetched poll:', this.poll);
 
-        this.answer1 = this.poll.answer1;
-        this.answer2 = this.poll.answer2;
-        this.answer3 = this.poll.answer3;
-        this.answer4 = this.poll.answer4;
-        this.correctAnswer = this.poll.correctAnswer;
-        this.question = this.poll.question;
-        this.gameName = this.poll.name;
+      this.answer1 = data.answer1;
+      this.answer2 = data.answer2;
+      this.answer3 = data.answer3;
+      this.answer4 = data.answer4;
+      this.correctAnswer = data.correctAnswer;
+      this.question = data.question;
+      this.gameName = data.name;
 
-        this.pollService.getGameByName(this.gameName).subscribe(gameData => {
-          this.game = gameData;
-        });
+      this.pollService.getGameByName(this.gameName).subscribe(gameData => {
+        this.game = gameData;
       });
-    }
-
-    this.pollService.getPolls().subscribe(data => {
-      this.polls = data;
     });
   }
 
-  onSearchChange(query: string) {
+  this.pollService.getPolls().subscribe(data => {
+    this.polls = data;
+  });
+}
+
+  // ─── Poll Answer Logic ────────────────────────────────────────────────────────
+  selectAnswer(answerSelected: string): void {
+    if (!this.alreadyAnswered) {
+      this.answered = true;
+      this.selectedAnswer = answerSelected;
+      this.pollService.markAsAnswered(this.pollId!, answerSelected, this.correctAnswer);
+      this.alreadyAnswered = true;
+    }
+    console.log("Clicked an answer", answerSelected);
+  }
+
+  // ─── Image Viewer ─────────────────────────────────────────────────────────────
+  openImage(url: string): void {
+    this.selectedImage = url;
+  }
+
+  closeImage(): void {
+    this.selectedImage = null;
+  }
+
+  // ─── Search Game Logic ────────────────────────────────────────────────────────
+  onSearchChange(query: string): void {
     this.searchQuery = query;
 
     if (query.length < 3) {
@@ -80,36 +111,15 @@ export class PollComponent {
     }
 
     this.pollService.searchGames(query).subscribe({
-      next: results => {
-        this.searchResults = results;
-      },
-      error: err => {
-        console.error('Search error:', err);
-      }
+      next: results => this.searchResults = results,
+      error: err => console.error('Search error:', err)
     });
   }
 
-  selectGameFromSearch(game: any) {
+  selectGameFromSearch(game: any): void {
     this.selectedGameFromSearch = game;
+    this.selectAnswer(this.selectedGameFromSearch.name);
     this.searchQuery = game.name;
     this.searchResults = [];
-  }
-
-  selectAnswer(answerSelected: string): void {
-    if (!this.alreadyAnswered) {
-      this.answered = true;
-      this.selectedAnswer = answerSelected;
-      this.pollService.markAsAnswered(this.pollId!, this.selectedAnswer, this.correctAnswer);
-      this.alreadyAnswered = true;
-    }
-    console.log("Clicked an answer " + answerSelected);
-  }
-
-  openImage(url: string) {
-    this.selectedImage = url;
-  }
-
-  closeImage() {
-    this.selectedImage = null;
   }
 }
