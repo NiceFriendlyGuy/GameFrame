@@ -3,7 +3,7 @@
         "_id": "681a4d99918101dce2d861e3",
         "name": "God of War",
         "question": "Which game is shown in this screenshot?",
-        "correctAnswer": "God of War (2018)",
+        "correctAnswer": "God of War",
         "answer1": "God of War III",
         "answer2": "Assassin's Creed Odyssey",
         "answer3": "The Last of Us Part II",

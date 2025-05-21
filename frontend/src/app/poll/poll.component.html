@@ -1,34 +1,6 @@
 <div class="question-container">
     <p>poll works!</p>
 
-   
-
-    <h2>{{ game?.name }}</h2>
-    <img *ngIf="game?.cover" [src]="game.cover" alt="cover" />
-
-    <h3>Artworks</h3>
-    <div class="image-grid">
-        @for (art of game?.artworks; track art.id) {
-        <img [src]="art.url" (click)="openImage(art.url)" [alt]="game.name + ' artwork'" />
-        }
-    </div>
-    
-    @if (selectedImage) {
-    <div class="image-modal" (click)="closeImage()">
-        <img [src]="selectedImage" class="full-image" />
-        <span class="close-btn">×</span>
-    </div>
-    }
-
-    
-    <h3>Screenshots</h3>
-    <div class="image-grid">
-        @for (shot of game?.screenshots; track shot.id) {
-        <img [src]="shot.url" (click)="openImage(shot.url)" [alt]="game.name + ' screenshot'" />
-        }
-    </div>
-
-
 
     @for(poll of polls; track poll?._id){
     <li>{{poll?.name}} {{poll?._id}} {{poll.date}}</li>
@@ -94,4 +66,35 @@
         <h2>Wrong !</h2>
         <h2>The correct answer was: {{correctAnswer}} !</h2>
     }
+
+   
+
+    <h2>{{ game?.name }}</h2>
+    <img *ngIf="game?.cover" [src]="game.cover" alt="cover" />
+
+    <h3>Artworks</h3>
+    <div class="image-grid">
+        @for (art of game?.artworks; track art.id) {
+        <img [src]="art.url" (click)="openImage(art.url)" [alt]="game.name + ' artwork'" />
+        }
+    </div>
+    
+    @if (selectedImage) {
+    <div class="image-modal" (click)="closeImage()">
+        <img [src]="selectedImage" class="full-image" />
+        <span class="close-btn">×</span>
+    </div>
+    }
+
+    
+    <h3>Screenshots</h3>
+    <div class="image-grid">
+        @for (shot of game?.screenshots; track shot.id) {
+        <img [src]="shot.url" (click)="openImage(shot.url)" [alt]="game.name + ' screenshot'" />
+        }
+    </div>
+
+
+
+    
 </div>
