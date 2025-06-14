@@ -3,6 +3,7 @@ import { PollService } from '../../poll.service';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../auth.service';
 
 @Component({
   selector: 'app-poll',
@@ -15,12 +16,14 @@ export class PollComponent {
   // ─── Dependencies ─────────────────────────────────────────────────────────────
   private pollService = inject(PollService);
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private auth:AuthService) {}
 
   // ─── Poll State ───────────────────────────────────────────────────────────────
   pollId: string | null = null;
   poll: any;
   polls: any[] = [];
+
+  user: any = null;
 
   question = '';
   answer1 = '';
@@ -47,6 +50,17 @@ export class PollComponent {
   // ─── Lifecycle ────────────────────────────────────────────────────────────────
   ngOnInit(): void {
   this.pollId = this.route.snapshot.paramMap.get('id');
+
+  this.user = this.auth.getUser();
+
+  if (this.user) {
+    console.log('Logged in as:', this.user.email);
+    // Load user progress from backend if needed
+  } else {
+    console.log('Guest user');
+    // Use localStorage
+  }
+
 
   if (this.pollId) {
     const status = this.pollService.getAnswerStatus(this.pollId);

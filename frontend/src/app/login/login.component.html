@@ -1,0 +1,23 @@
+<h2>Login</h2>
+<form (ngSubmit)="onLogin()" #loginForm="ngForm">
+  <input type="email" name="email" [(ngModel)]="email" required placeholder="Email" />
+  <input type="password" name="password" [(ngModel)]="password" required placeholder="Password" />
+  <button type="submit">Login</button>
+</form>
+
+@if (error) {
+  <p>{{ error }}</p>
+}
+
+<hr />
+
+<h2>Register</h2>
+<form (ngSubmit)="onRegister()" #registerForm="ngForm">
+  <input type="email" name="regEmail" [(ngModel)]="regEmail" required placeholder="Email" />
+  <input type="password" name="regPassword" [(ngModel)]="regPassword" required placeholder="Password" />
+  <button type="submit">Register</button>
+</form>
+
+@if (regError) {
+  <p>{{ regError }}</p>
+}

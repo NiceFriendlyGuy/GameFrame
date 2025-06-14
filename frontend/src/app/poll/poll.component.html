@@ -1,6 +1,13 @@
 <div class="question-container">
     <p>poll works!</p>
 
+    @if (user) {
+    <p>Welcome back, {{ user.email }}!</p>
+    } @else {
+    <p>Welcome, guest!</p>
+    }
+
+
 
     @for(poll of polls; track poll?._id){
     <li>{{poll?.name}} {{poll?._id}} {{poll.date}}</li>

@@ -12,8 +12,12 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    max-width: 600px;
     margin: 0 auto;
+  }
+
+  .nav-buttons{
+    display: flex;
+    gap: 20px;
   }
   
   .nav-bar button {
