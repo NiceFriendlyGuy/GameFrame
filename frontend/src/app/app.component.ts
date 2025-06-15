@@ -31,4 +31,11 @@ export class AppComponent {
       // Use localStorage
     }
   }
+
+  logout(): void {
+    this.auth.logout();
+    this.user = null;
+    window.location.reload();
+  }
+
 }

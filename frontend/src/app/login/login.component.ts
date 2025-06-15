@@ -29,7 +29,10 @@ export class LoginComponent {
       next: res => {
         localStorage.setItem('token', res.token);
         console.log('Logged in!');
-        this.router.navigate(['/']);
+        this.router.navigate(['/']).then(() => {
+        // Optionally force a reload of the component
+        window.location.reload();  // place it here if really needed
+      });
       },
       error: err => {
         this.error = err.error?.message || 'Login failed';

@@ -8,11 +8,15 @@
       </div>
       <div>
         @if (user) {
-        <p>Welcome back, {{ user.email }}!</p>
-        } @else {
-        <p>Welcome, guest!</p>
+          <p>Welcome back, {{ user.email }}!</p>
+          <button (click)="logout()">Logout</button>
+        }@else {
+          <p>Welcome, guest!</p>
+          <button (click)="navigateTo('login')">Login</button>
         }
       </div>
+      
+
     </nav>
 
 </header>

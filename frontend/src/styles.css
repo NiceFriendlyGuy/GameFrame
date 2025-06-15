@@ -5,4 +5,5 @@ body {
     font-family: 'Segoe UI', Roboto, sans-serif;
     background: linear-gradient(to right, #f5f7fa, #c3cfe2); /* soft gradient */
     color: #333;
+    padding-top: 100px; 
   }
