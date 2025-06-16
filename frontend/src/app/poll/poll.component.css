@@ -8,6 +8,37 @@
     align-content: center;
 }
 
+.game-search {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+/* Button styling */
+ .game-search button {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    font-size: min(3vw,30px);
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.game-search button:hover {
+    background-color: #357ab8;
+    transform: translateY(-2px);
+}
+
+.game-search button:active {
+    transform: translateY(0);
+    background-color: #2f68a0;
+}
+
 .game-cover{
     width: 400px;
     border: 1px solid black;
@@ -115,7 +146,11 @@
 
 .search-box {
   position: relative;
-  max-width: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .search-input {
@@ -146,11 +181,15 @@
   background: #eee;
 }
 
-.selected-game-preview {
-  margin-top: 1rem;
+.game-preview {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10px 10px 10px;
 }
 
-.selected-game-preview img {
+.game-preview img {
   max-width: 200px;
   border-radius: 8px;
 }

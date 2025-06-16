@@ -6,7 +6,7 @@
       <button>Stats</button>
       <button>About</button>
       </div>
-      <div>
+      <div class="logged-user">
         @if (user) {
           <p>Welcome back, {{ user.email }}!</p>
           <button (click)="logout()">Logout</button>

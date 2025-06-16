@@ -132,8 +132,12 @@ export class PollComponent {
 
   selectGameFromSearch(game: any): void {
     this.selectedGameFromSearch = game;
-    this.selectAnswer(this.selectedGameFromSearch.name);
+    
     this.searchQuery = game.name;
     this.searchResults = [];
+  }
+
+  confirmSelectedAnswerFromSearch(selectedGameFromSearch: string): void{
+    this.selectAnswer(this.selectedGameFromSearch.name);
   }
 }

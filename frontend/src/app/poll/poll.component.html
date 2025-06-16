@@ -1,13 +1,4 @@
 <div class="question-container">
-    <p>poll works!</p>
-
-    @if (user) {
-    <p>Welcome back, {{ user.email }}!</p>
-    } @else {
-    <p>Welcome, guest!</p>
-    }
-
-
 
     @for(poll of polls; track poll?._id){
     <li>{{poll?.name}} {{poll?._id}} {{poll.date}}</li>
@@ -15,40 +6,44 @@
 
 
     <div class="question">
-        <img src="giphy.gif" alt="Funny gif">
+        <img *ngIf="game?.cover" [src]="game.cover" alt="cover" />
         <h2>{{question}}</h2>
     </div>
 
 
-    <div class="search-box">
-    <input
-        #inputBox
-        type="text"
-        [value]="searchQuery"
-        (input)="onSearchChange(inputBox.value)"
-        placeholder="Search for a game..."
-        class="search-input"
-    />
+    <div class="game-search">
+        <div class="search-box">
+            <input
+                #inputBox
+                type="text"
+                [value]="searchQuery"
+                (input)="onSearchChange(inputBox.value)"
+                placeholder="Search for a game..."
+                class="search-input"
+            />
 
 
-    @if (searchResults.length > 0) {
-        <ul class="search-results">
-        @for (game of searchResults; track game.id) {
-            <li (click)="selectGameFromSearch(game)">
-            {{ game.name }}
-            </li>
-        }
-        </ul>
-    }
-
-    @if (selectedGameFromSearch) {
-        <div class="game-preview">
-        <p>You selected: {{ selectedGameFromSearch.name }}</p>
-        @if (selectedGameFromSearch.image) {
-            <img [src]="selectedGameFromSearch.image" [alt]="selectedGameFromSearch.name" />
-        }
+            @if (searchResults.length > 0) {
+                <ul class="search-results">
+                @for (game of searchResults; track game.id) {
+                    <li (click)="selectGameFromSearch(game)">
+                    {{ game.name }}
+                    </li>
+                }
+                </ul>
+            }
         </div>
-    }
+        @if (selectedGameFromSearch) {
+            <div class="game-preview">
+            <p>You selected: {{ selectedGameFromSearch.name }}</p>
+            @if (selectedGameFromSearch.image) {
+                <img [src]="selectedGameFromSearch.image" [alt]="selectedGameFromSearch.name" />
+            }
+            </div>
+            @if(!answered){
+                <button (click)="confirmSelectedAnswerFromSearch(selectedGameFromSearch)">Final answer ?</button>
+            }
+        }
     </div>
 
 
@@ -66,7 +61,8 @@
     @if(answered){
     <h2>You answered! {{selectedAnswer}}</h2>
     }
-    @if(correctAnswer === selectedAnswer){
+
+    @if(answered && correctAnswer === selectedAnswer){
         <h2>Correct !</h2>
     }
     @else if(answered){
@@ -75,7 +71,7 @@
     }
 
    
-
+    @if(answered){
     <h2>{{ game?.name }}</h2>
     <img *ngIf="game?.cover" [src]="game.cover" alt="cover" />
 
@@ -100,7 +96,7 @@
         <img [src]="shot.url" (click)="openImage(shot.url)" [alt]="game.name + ' screenshot'" />
         }
     </div>
-
+    }
 
 
     
