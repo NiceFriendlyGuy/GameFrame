@@ -6,8 +6,19 @@
 
 
     <div class="question">
-        <img *ngIf="game?.cover" [src]="game.cover" alt="cover" />
+        @if (firstScreenshot) {
+            <img [src]="firstScreenshot.url"
+                (click)="openImage(firstScreenshot.url)"
+                [alt]="game.name + ' screenshot'" />
+        }
+        @if (secondScreenshot) {
+            <img [src]="secondScreenshot.url"
+                (click)="openImage(secondScreenshot.url)"
+                [alt]="game.name + ' screenshot'" />
+        }
+
         <h2>{{question}}</h2>
+        <h2>Number of guesses: {{guesses}}</h2>
     </div>
 
 

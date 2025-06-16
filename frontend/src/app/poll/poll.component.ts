@@ -34,6 +34,7 @@ export class PollComponent {
   selectedAnswer = '';
   answered = false;
   alreadyAnswered = false;
+  guesses = 0;
 
   // ─── Game Metadata ────────────────────────────────────────────────────────────
   gameName = 'God of War';
@@ -102,6 +103,7 @@ export class PollComponent {
       this.selectedAnswer = answerSelected;
       this.pollService.markAsAnswered(this.pollId!, answerSelected, this.correctAnswer);
       this.alreadyAnswered = true;
+      this.guesses++;
     }
     console.log("Clicked an answer", answerSelected);
   }
@@ -140,4 +142,25 @@ export class PollComponent {
   confirmSelectedAnswerFromSearch(selectedGameFromSearch: string): void{
     this.selectAnswer(this.selectedGameFromSearch.name);
   }
+
+  get firstScreenshot() {
+    return this.game?.screenshots?.[0] || null;
+  }
+
+  get secondScreenshot() {
+    return this.game?.screenshots?.[1] || null;
+  }
+
+  get thirdScreenshot() {
+    return this.game?.screenshots?.[2] || null;
+  }
+
+  get fourthScreenshot() {
+    return this.game?.screenshots?.[3] || null;
+  }
+
+  get fifthScreenshot() {
+    return this.game?.screenshots?.[4] || null;
+  }
+
 }
