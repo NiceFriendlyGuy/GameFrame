@@ -9,7 +9,7 @@
         @if (firstScreenshot) {
             <img [src]="firstScreenshot.url"
                 (click)="openImage(firstScreenshot.url)"
-                [alt]="game.name + ' screenshot'" />
+                [alt]="poll.name + ' screenshot'" />
         }
         @if (secondScreenshot) {
             <img [src]="secondScreenshot.url"
@@ -17,8 +17,15 @@
                 [alt]="game.name + ' screenshot'" />
         }
 
-        <h2>{{question}}</h2>
-        <h2>Number of guesses: {{guesses}}</h2>
+        <h2>{{poll?.question}}</h2>
+        <h2>Number of guesses: {{nbGuesses}}</h2>
+        <div *ngIf="guesses.length > 0">
+            <p>Your guesses:</p>
+            <ul>
+                <li *ngFor="let g of guesses">{{ g }}</li>
+            </ul>
+        </div>
+
     </div>
 
 
@@ -62,10 +69,10 @@
     
     @if(!answered){
     <div class="poll-buttons">
-        <button (click)="selectAnswer(answer1)">{{answer1}}</button>
-        <button (click)="selectAnswer(answer2)">{{answer2}}</button>
-        <button (click)="selectAnswer(answer3)">{{answer3}}</button>
-        <button (click)="selectAnswer(answer4)">{{answer4}}</button>
+        <button (click)="selectAnswer(poll?.answer1)">{{poll?.answer1}}</button>
+        <button (click)="selectAnswer(poll?.answer2)">{{poll?.answer2}}</button>
+        <button (click)="selectAnswer(poll?.answer3)">{{poll?.answer3}}</button>
+        <button (click)="selectAnswer(poll?.answer4)">{{poll?.answer4}}</button>
     </div>
     }
 
@@ -73,12 +80,12 @@
     <h2>You answered! {{selectedAnswer}}</h2>
     }
 
-    @if(answered && correctAnswer === selectedAnswer){
+    @if(answered && poll?.correctAnswer === selectedAnswer){
         <h2>Correct !</h2>
     }
     @else if(answered){
         <h2>Wrong !</h2>
-        <h2>The correct answer was: {{correctAnswer}} !</h2>
+        <h2>The correct answer was: {{poll?.correctAnswer}} !</h2>
     }
 
    

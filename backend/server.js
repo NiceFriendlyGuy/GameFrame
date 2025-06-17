@@ -1,20 +1,22 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
-const port = 3000;  // Ensure it listens on port 3000
-
-const authRoutes = require('./routes/auth');
-
+const port = 3000;
 
 const cors = require('cors');
 app.use(cors());
 
-const { fetchGameByName, getAccessToken, fetchGamesByQuery } = require('./igdb.service');
-
 // Middleware
-app.use(express.json());
+app.use(express.json()); 
+
+const authRoutes = require('./routes/auth');
+// FIX THIS const userRoutes = require('./routes/user');
 
 app.use('/api/auth', authRoutes);
+// FIX THIS app.use('/api/users', userRoutes);
+
+
+const { fetchGameByName, getAccessToken, fetchGamesByQuery } = require('./igdb.service');
 
 // Replace "mongo" with the service name from docker-compose.yml
 const mongoURI = 'mongodb://mongo:27017/entries';  // Update to 'mongo'

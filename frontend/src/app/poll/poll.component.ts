@@ -25,16 +25,13 @@ export class PollComponent {
 
   user: any = null;
 
-  question = '';
-  answer1 = '';
-  answer2 = '';
-  answer3 = '';
-  answer4 = '';
-  correctAnswer = '';
   selectedAnswer = '';
   answered = false;
   alreadyAnswered = false;
-  guesses = 0;
+  nbGuesses = 0;
+  guesses: string[] = []; // array to store guess history
+  
+
 
   // ─── Game Metadata ────────────────────────────────────────────────────────────
   gameName = 'God of War';
@@ -62,6 +59,18 @@ export class PollComponent {
     // Use localStorage
   }
 
+  if (this.user && this.pollId) {
+  const userPoll = this.user.answeredPolls?.find((p: any) => p.pollId === this.pollId);
+  if (userPoll) {
+    this.alreadyAnswered = userPoll.answered;
+    this.answered = userPoll.answered;
+    this.guesses = userPoll.guesses.map((g: any) => g.answer);
+    this.selectedAnswer = this.guesses[this.guesses.length - 1] || '';
+  }
+}
+
+  
+
 
   if (this.pollId) {
     const status = this.pollService.getAnswerStatus(this.pollId);
@@ -77,12 +86,7 @@ export class PollComponent {
       this.poll = data;
       console.log('Fetched poll:', this.poll);
 
-      this.answer1 = data.answer1;
-      this.answer2 = data.answer2;
-      this.answer3 = data.answer3;
-      this.answer4 = data.answer4;
-      this.correctAnswer = data.correctAnswer;
-      this.question = data.question;
+
       this.gameName = data.name;
 
       this.pollService.getGameByName(this.gameName).subscribe(gameData => {
@@ -98,15 +102,36 @@ export class PollComponent {
 
   // ─── Poll Answer Logic ────────────────────────────────────────────────────────
   selectAnswer(answerSelected: string): void {
-    if (!this.alreadyAnswered) {
-      this.answered = true;
-      this.selectedAnswer = answerSelected;
-      this.pollService.markAsAnswered(this.pollId!, answerSelected, this.correctAnswer);
-      this.alreadyAnswered = true;
-      this.guesses++;
+  if (!this.pollId || this.answered) return;
+
+  this.selectedAnswer = answerSelected;
+  this.guesses.push(answerSelected); // track the guess
+
+  // Update backend or localStorage through service
+  this.pollService.addGuess(this.pollId, answerSelected).subscribe({
+    next: () => {
+      console.log('Guess recorded');
+    },
+    error: err => {
+      console.error('Error recording guess:', err);
     }
-    console.log("Clicked an answer", answerSelected);
+  });
+
+  // If it's the correct answer, mark as answered
+  if (answerSelected === this.poll.correctAnswer) {
+    this.answered = true;
+    this.alreadyAnswered = true;
+    this.pollService.markPollAsAnswered(this.pollId).subscribe({
+      next: () => {
+        console.log('Marked poll as answered');
+      },
+      error: err => console.error('Failed to mark poll as answered:', err)
+    });
   }
+
+  console.log('Clicked an answer:', answerSelected);
+}
+
 
   // ─── Image Viewer ─────────────────────────────────────────────────────────────
   openImage(url: string): void {

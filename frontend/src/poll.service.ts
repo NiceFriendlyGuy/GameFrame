@@ -2,13 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-
 @Injectable({
   providedIn: 'root'
 })
-
 export class PollService {
   private apiUrl = 'http://localhost:3000/api/entries'; // Your backend API
+  private userApiUrl = 'http://localhost:3000/api/users'; // User-related endpoints
 
   constructor(private http: HttpClient) { }
 
@@ -38,6 +37,20 @@ export class PollService {
     localStorage.setItem(this.storageKey, JSON.stringify(answered));
   }
 
+  markPollAsAnswered(pollId: string): Observable<any> {
+    return this.http.post(`${this.userApiUrl}/mark-answered`, {
+      pollId
+    });
+  }
+
+  addGuess(pollId: string, guess: string): Observable<any> {
+    return this.http.post(`${this.userApiUrl}/guess`, {
+      pollId,
+      guess
+    });
+  }
+
+
   getAnsweredQuestions(): Record<string, { selected: string, correct: string }> {
     return JSON.parse(localStorage.getItem(this.storageKey) || '{}');
   }
@@ -59,6 +72,4 @@ export class PollService {
   searchGames(query: string): Observable<any[]> {
     return this.http.get<any[]>(`http://localhost:3000/api/search/${encodeURIComponent(query)}`);
   }
-
-
 }
