@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ export class PollService {
   private apiUrl = 'http://localhost:3000/api/entries'; // Your backend API
   private userApiUrl = 'http://localhost:3000/api/users'; // User-related endpoints
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private auth: AuthService) { }
 
   // Get all polls
   getPolls(): Observable<any[]> {
@@ -44,11 +45,15 @@ export class PollService {
   }
 
   addGuess(pollId: string, guess: string): Observable<any> {
-    return this.http.post(`${this.userApiUrl}/guess`, {
-      pollId,
-      guess
-    });
-  }
+  const email = this.auth.getUser()?.email || '';
+
+  const headers = {
+    'x-user-email': email
+  };
+
+  return this.http.post(`${this.userApiUrl}/guess`, { pollId, guess }, { headers });
+}
+
 
 
   getAnsweredQuestions(): Record<string, { selected: string, correct: string }> {

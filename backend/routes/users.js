@@ -4,9 +4,18 @@ const mongoose = require('mongoose');
 const User = require('../models/User'); // Make sure this path is correct
 
 // POST /api/users/guess
+// POST /api/users/guess
 router.post('/guess', async (req, res) => {
+  console.log("CREATING A NEW ENTRY");
+
+  const userEmail = req.headers['x-user-email'];
+
+  // ✅ Defensive check BEFORE destructuring
+  if (!req.body || typeof req.body !== 'object') {
+    return res.status(400).json({ message: 'Missing request body.' });
+  }
+
   const { pollId, guess } = req.body;
-  const userEmail = req.headers['x-user-email']; // Replace with your auth logic
 
   if (!userEmail || !pollId || !guess) {
     return res.status(400).json({ message: 'Missing user, pollId or guess.' });
@@ -21,22 +30,26 @@ router.post('/guess', async (req, res) => {
     if (!poll) {
       poll = {
         pollId,
-        correctAnswer: '', // You may fetch the correct answer if needed
+        correctAnswer: '',
         guesses: [],
-        answered: false
+        answered: false,
+        answeredAt: null
       };
       user.answeredPolls.push(poll);
     }
 
-    poll.guesses.push({ answer: guess });
+    poll.guesses.push({ answer: guess, guessedAt: new Date() });
 
     await user.save();
+
     res.status(200).json({ message: 'Guess recorded.' });
+
   } catch (err) {
-    console.error('Error recording guess:', err);
+    console.error('🔥 Error recording guess:', err);
     res.status(500).json({ message: 'Server error.' });
   }
 });
+
 
 // POST /api/users/mark-answered
 router.post('/mark-answered', async (req, res) => {

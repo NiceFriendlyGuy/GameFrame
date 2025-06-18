@@ -10,10 +10,10 @@ app.use(cors());
 app.use(express.json()); 
 
 const authRoutes = require('./routes/auth');
-// FIX THIS const userRoutes = require('./routes/user');
+const userRoutes = require('./routes/users');
 
 app.use('/api/auth', authRoutes);
-// FIX THIS app.use('/api/users', userRoutes);
+app.use('/api/users', userRoutes);
 
 
 const { fetchGameByName, getAccessToken, fetchGamesByQuery } = require('./igdb.service');
