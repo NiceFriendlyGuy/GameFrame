@@ -49,7 +49,7 @@ export class PollComponent {
   ngOnInit(): void {
   this.pollId = this.route.snapshot.paramMap.get('id');
 
-  this.user = this.auth.getUser();
+  this.user = this.auth.getUserEmail();
 
   if (this.user) {
     console.log('Logged in as:', this.user.email);
@@ -58,6 +58,8 @@ export class PollComponent {
     console.log('Guest user');
     // Use localStorage
   }
+
+
 
   if (this.user && this.pollId) {
   const userPoll = this.user.answeredPolls?.find((p: any) => p.pollId === this.pollId);
@@ -121,6 +123,7 @@ export class PollComponent {
   if (answerSelected === this.poll.correctAnswer) {
     this.answered = true;
     this.alreadyAnswered = true;
+    console.log(this.pollId);
     this.pollService.markPollAsAnswered(this.pollId).subscribe({
       next: () => {
         console.log('Marked poll as answered');

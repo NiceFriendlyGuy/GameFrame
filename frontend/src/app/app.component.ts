@@ -21,7 +21,7 @@ export class AppComponent {
   }
 
   ngOnInit(): void {
-    this.user = this.auth.getUser();
+    this.user = this.auth.getUserEmail();
 
     if (this.user) {
       console.log('Logged in as:', this.user.email);

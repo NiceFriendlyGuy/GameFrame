@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -39,26 +39,48 @@ export class PollService {
   }
 
   markPollAsAnswered(pollId: string): Observable<any> {
+    const email = this.auth.getUserEmail()?.email || '';
+
+    const headers = {
+      'x-user-email': email
+    };
     return this.http.post(`${this.userApiUrl}/mark-answered`, {
       pollId
-    });
+    },  { headers });
   }
 
   addGuess(pollId: string, guess: string): Observable<any> {
-  const email = this.auth.getUser()?.email || '';
+    const email = this.auth.getUserEmail()?.email || '';
 
-  const headers = {
+    const headers = {
+      'x-user-email': email
+    };
+
+    return this.http.post(`${this.userApiUrl}/guess`, { pollId, guess }, { headers });
+  }
+
+  deleteAllAnswers(): Observable<any> {
+  const email = this.auth.getUserEmail()?.email || '';
+
+  const headers = new HttpHeaders({
     'x-user-email': email
-  };
+  });
 
-  return this.http.post(`${this.userApiUrl}/guess`, { pollId, guess }, { headers });
+  return this.http.delete(`${this.userApiUrl}/deleteAll`, { headers });
 }
 
 
+  getAnsweredQuestions(): Observable<any> {
+  const email = this.auth.getUserEmail()?.email;
+  if (!email) return of([]);
 
-  getAnsweredQuestions(): Record<string, { selected: string, correct: string }> {
-    return JSON.parse(localStorage.getItem(this.storageKey) || '{}');
-  }
+  const headers = new HttpHeaders({
+    'x-user-email': email
+  });
+
+  return this.http.get(`/api/answeredPolls`, { headers });
+}
+
 
   getAnswerStatus(pollId: string): 'correct' | 'incorrect' | 'unanswered' {
     const answers = this.getAnsweredQuestions();

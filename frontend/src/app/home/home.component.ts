@@ -37,7 +37,17 @@ export class HomeComponent {
     this.router.navigate([page]);
   }
 
-  clearAllAnwsers(){
-    this.pollService.clearAnswered();
+  clearAllAnwsers() {
+    this.pollService.deleteAllAnswers().subscribe({
+      next: (res) => {
+        console.log('Poll answers deleted:', res);
+        // Optionally: show a success message or refresh UI
+      },
+      error: (err) => {
+        console.error('Error deleting answers:', err);
+        // Optionally: show an error message to the user
+      }
+    });
   }
+
 }

@@ -38,4 +38,45 @@ const token = jwt.sign(
   res.json({ token });
 });
 
+
+router.get('/users', async (req, res) => {
+  const email = req.headers['x-user-email'];
+
+  if (!email) {
+    return res.status(400).json({ message: 'Missing user email in header' });
+  }
+
+  try {
+    const user = await User.findOne({ email }).select('-passwordHash');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+    res.json(user);
+  } catch (err) {
+    console.error('Error fetching user:', err);
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+router.get('/answeredPolls', async (req, res) => {
+  const email = req.headers['x-user-email'];
+
+  if (!email) {
+    return res.status(400).json({ message: 'Missing user email in header' });
+  }
+
+  try {
+    const user = await User.findOne({ email }).select('answeredPolls -_id'); // only answeredPolls field
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    res.json(user.answeredPolls);
+  } catch (err) {
+    console.error('Error fetching answeredPolls:', err);
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
+
 module.exports = router;
