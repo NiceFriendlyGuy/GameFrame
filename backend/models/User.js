@@ -8,7 +8,6 @@ const guessSchema = new mongoose.Schema({
 const answeredPollSchema = new mongoose.Schema({
   pollId: { type: String, required: true },
   guesses: [guessSchema],
-  correctAnswer: { type: String, required: true },
   answered: { type: Boolean, default: false }, // whether the question is finished
   answeredAt: { type: Date } // optional: when the question was marked as answered
 }, { _id: false });

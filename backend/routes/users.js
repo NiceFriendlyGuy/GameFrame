@@ -4,18 +4,11 @@ const mongoose = require('mongoose');
 const User = require('../models/User'); // Make sure this path is correct
 
 // POST /api/users/guess
-// POST /api/users/guess
 router.post('/guess', async (req, res) => {
   console.log("CREATING A NEW ENTRY");
 
-  const userEmail = req.headers['x-user-email'];
-
-  // ✅ Defensive check BEFORE destructuring
-  if (!req.body || typeof req.body !== 'object') {
-    return res.status(400).json({ message: 'Missing request body.' });
-  }
-
   const { pollId, guess } = req.body;
+  const userEmail = req.headers['x-user-email'];  
 
   if (!userEmail || !pollId || !guess) {
     return res.status(400).json({ message: 'Missing user, pollId or guess.' });
@@ -28,17 +21,22 @@ router.post('/guess', async (req, res) => {
     let poll = user.answeredPolls.find(p => p.pollId === pollId);
 
     if (!poll) {
-      poll = {
+      poll = user.answeredPolls.create({
         pollId,
         correctAnswer: '',
         guesses: [],
         answered: false,
         answeredAt: null
-      };
+      });
+
       user.answeredPolls.push(poll);
     }
 
-    poll.guesses.push({ answer: guess, guessedAt: new Date() });
+    const guessSubdoc = poll.guesses.create({
+      answer: guess  // guessedAt will be automatically set by default if you defined it in schema
+    });
+
+    poll.guesses.push(guessSubdoc);
 
     await user.save();
 
@@ -49,6 +47,8 @@ router.post('/guess', async (req, res) => {
     res.status(500).json({ message: 'Server error.' });
   }
 });
+
+
 
 
 // POST /api/users/mark-answered
