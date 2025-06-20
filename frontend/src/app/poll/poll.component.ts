@@ -24,11 +24,11 @@ export class PollComponent {
   polls: any[] = [];
 
   user: any = null;
+  answeredPolls: any[] = [];
 
   selectedAnswer = '';
   answered = false;
   alreadyAnswered = false;
-  nbGuesses = 0;
   guesses: string[] = []; // array to store guess history
   
 
@@ -48,47 +48,43 @@ export class PollComponent {
   // ─── Lifecycle ────────────────────────────────────────────────────────────────
   ngOnInit(): void {
   this.pollId = this.route.snapshot.paramMap.get('id');
-
   this.user = this.auth.getUserEmail();
 
   if (this.user) {
     console.log('Logged in as:', this.user.email);
-    // Load user progress from backend if needed
+    // Fully backend mode for logged-in users
+    this.pollService.getAnsweredQuestions().subscribe(data => {
+      this.answeredPolls = data;
+
+      if (this.pollId) {
+        const poll = this.answeredPolls.find(p => p.pollId === this.pollId);
+        if (poll) {
+          this.alreadyAnswered = poll.answered;
+          this.answered = poll.answered;
+          this.guesses = poll.guesses.map((g: any) => g.answer);
+          this.selectedAnswer = this.guesses[this.guesses.length - 1] || '';
+        }
+      }
+    });
   } else {
     console.log('Guest user');
-    // Use localStorage
-  }
-
-
-
-  if (this.user && this.pollId) {
-  const userPoll = this.user.answeredPolls?.find((p: any) => p.pollId === this.pollId);
-  if (userPoll) {
-    this.alreadyAnswered = userPoll.answered;
-    this.answered = userPoll.answered;
-    this.guesses = userPoll.guesses.map((g: any) => g.answer);
-    this.selectedAnswer = this.guesses[this.guesses.length - 1] || '';
-  }
-}
-
-  
-
-
-  if (this.pollId) {
-    const status = this.pollService.getAnswerStatus(this.pollId);
-    if (status !== 'unanswered') {
-      this.alreadyAnswered = true;
-      this.answered = true;
-
-      const stored = this.pollService.getAnsweredQuestions()[this.pollId];
-      this.selectedAnswer = stored?.selected || '';
+    // Use localStorage for guests
+    if (this.pollId) {
+      const answered = JSON.parse(localStorage.getItem('answeredQuestions') || '{}');
+      const stored = answered[this.pollId];
+      if (stored) {
+        this.alreadyAnswered = true;
+        this.answered = true;
+        this.selectedAnswer = stored.selected;
+      }
     }
+  }
 
+  // Always load full poll data
+  if (this.pollId) {
     this.pollService.getPollById(this.pollId).subscribe(data => {
       this.poll = data;
       console.log('Fetched poll:', this.poll);
-
-
       this.gameName = data.name;
 
       this.pollService.getGameByName(this.gameName).subscribe(gameData => {
@@ -102,38 +98,46 @@ export class PollComponent {
   });
 }
 
+
+
   // ─── Poll Answer Logic ────────────────────────────────────────────────────────
   selectAnswer(answerSelected: string): void {
   if (!this.pollId || this.answered) return;
 
   this.selectedAnswer = answerSelected;
-  this.guesses.push(answerSelected); // track the guess
+  this.guesses.push(answerSelected); // local guess update
 
-  // Update backend or localStorage through service
   this.pollService.addGuess(this.pollId, answerSelected).subscribe({
     next: () => {
       console.log('Guess recorded');
+
+      // Refresh answeredPolls after new guess
+      this.pollService.getAnsweredQuestions().subscribe(data => {
+        this.answeredPolls = data;
+
+        // Optionally update nbGuesses here
+        const poll = this.answeredPolls.find(p => p.pollId === this.pollId);
+      });
+
+      if (answerSelected === this.poll.correctAnswer) {
+        this.pollService.markPollAsAnswered(this.pollId!).subscribe({
+          next: () => {
+            console.log('Marked poll as answered');
+            this.answered = true;
+            this.alreadyAnswered = true;
+          },
+          error: err => console.error('Failed to mark poll as answered:', err)
+        });
+      }
     },
     error: err => {
       console.error('Error recording guess:', err);
     }
   });
 
-  // If it's the correct answer, mark as answered
-  if (answerSelected === this.poll.correctAnswer) {
-    this.answered = true;
-    this.alreadyAnswered = true;
-    console.log(this.pollId);
-    this.pollService.markPollAsAnswered(this.pollId).subscribe({
-      next: () => {
-        console.log('Marked poll as answered');
-      },
-      error: err => console.error('Failed to mark poll as answered:', err)
-    });
-  }
-
   console.log('Clicked an answer:', answerSelected);
 }
+
 
 
   // ─── Image Viewer ─────────────────────────────────────────────────────────────
@@ -190,5 +194,11 @@ export class PollComponent {
   get fifthScreenshot() {
     return this.game?.screenshots?.[4] || null;
   }
+
+  get totalGuesses(): number {
+    const poll = this.answeredPolls.find(p => p.pollId === this.pollId);
+    return poll?.guesses.length || 0;
+  }
+
 
 }
