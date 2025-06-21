@@ -30,6 +30,9 @@ export class PollComponent {
   answered = false;
   alreadyAnswered = false;
   guesses: string[] = []; // array to store guess history
+
+  screenshots: any[] = [];
+  currentGuessScreenshot: string | null = null;
   
 
 
@@ -39,6 +42,7 @@ export class PollComponent {
 
   // ─── Image Modal ──────────────────────────────────────────────────────────────
   selectedImage: string | null = null;
+  
 
   // ─── Search State ─────────────────────────────────────────────────────────────
   searchQuery = '';
@@ -89,6 +93,8 @@ export class PollComponent {
 
       this.pollService.getGameByName(this.gameName).subscribe(gameData => {
         this.game = gameData;
+        this.screenshots = (this.game?.screenshots || []).slice(0, 5);
+        this.currentGuessScreenshot = this.game?.screenshots?.[0]?.url || null;
       });
     });
   }
@@ -116,6 +122,10 @@ export class PollComponent {
         this.answeredPolls = data;
 
         // Optionally update nbGuesses here
+        if(this.totalGuesses <= 5){
+          console.log(this.screenshots?.[this.totalGuesses].url);
+          this.selectImage(this.screenshots?.[this.totalGuesses].url); 
+        }
         const poll = this.answeredPolls.find(p => p.pollId === this.pollId);
       });
 
@@ -173,6 +183,11 @@ export class PollComponent {
 
   confirmSelectedAnswerFromSearch(selectedGameFromSearch: string): void{
     this.selectAnswer(this.selectedGameFromSearch.name);
+  }
+
+  
+  selectImage(url: string | null) {
+    this.currentGuessScreenshot = url;
   }
 
   get firstScreenshot() {

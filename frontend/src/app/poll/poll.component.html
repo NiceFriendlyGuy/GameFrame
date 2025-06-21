@@ -6,16 +6,19 @@
 
 
     <div class="question">
-        @if (firstScreenshot) {
-            <img [src]="firstScreenshot.url"
-                (click)="openImage(firstScreenshot.url)"
-                [alt]="poll.name + ' screenshot'" />
-        }
-        @if (secondScreenshot) {
-            <img [src]="secondScreenshot.url"
-                (click)="openImage(secondScreenshot.url)"
-                [alt]="game.name + ' screenshot'" />
-        }
+
+        <img [src]="currentGuessScreenshot"
+                (click)="openImage(currentGuessScreenshot!)"
+                [alt]="currentGuessScreenshot" />
+        <div class="screenshot-buttons">
+            @for (screenshot of screenshots; track screenshot.url) {
+                @if ($index <= totalGuesses || answered) {
+                    <button (click)="selectImage(screenshot.url)">{{ $index }}</button>
+                } @else {
+                    <button disabled>{{ $index }}</button>
+                }
+            }
+        </div>
 
         <h2>{{poll?.question}}</h2>
         <h2>Number of guesses: {{ totalGuesses }}</h2>
@@ -27,6 +30,12 @@
         </div>
 
     </div>
+    @if (selectedImage) {
+    <div class="image-modal" (click)="closeImage()">
+        <img [src]="selectedImage" class="full-image" />
+        <span class="close-btn">×</span>
+    </div>
+    }
 
 
     <div class="game-search">
@@ -96,22 +105,17 @@
     <h3>Artworks</h3>
     <div class="image-grid">
         @for (art of game?.artworks; track art.id) {
-        <img [src]="art.url" (click)="openImage(art.url)" [alt]="game.name + ' artwork'" />
+        <img [src]="art.url" (click)="openImage(art.url)" [alt]="'artwork'" />
         }
     </div>
     
-    @if (selectedImage) {
-    <div class="image-modal" (click)="closeImage()">
-        <img [src]="selectedImage" class="full-image" />
-        <span class="close-btn">×</span>
-    </div>
-    }
+    
 
     
     <h3>Screenshots</h3>
     <div class="image-grid">
         @for (shot of game?.screenshots; track shot.id) {
-        <img [src]="shot.url" (click)="openImage(shot.url)" [alt]="game.name + ' screenshot'" />
+        <img [src]="shot.url" (click)="openImage(shot.url)" [alt]="'screenshot'" />
         }
     </div>
     }
