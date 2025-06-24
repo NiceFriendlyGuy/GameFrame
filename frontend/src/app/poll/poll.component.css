@@ -1,3 +1,39 @@
+.screenshot-buttons{
+  display: flex;
+  gap: 10px;
+  padding: 1rem;
+}
+
+
+button {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    font-size: min(3vw,30px);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+button:hover {
+    background-color: #357ab8;
+    transform: translateY(-2px);
+}
+
+button:disabled{
+    background-color: #c8d7e7;
+    color: white;
+    border: none;
+    font-size: min(3vw,30px);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
 .question-container{
     padding-top: 50px;
     max-width: 100%;
@@ -16,7 +52,6 @@
     padding: 20px;
 }
 
-/* Button styling */
  .game-search button {
     background-color: #4a90e2;
     color: white;

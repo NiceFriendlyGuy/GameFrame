@@ -2,9 +2,12 @@
 <div class="questions-container">
   <div class="button-list-container">
     @for(poll of polls; track poll?._id){
+      <div>
       <button (click)="navigateTo('poll/' + poll._id)">
         {{ poll?.name }} {{ getEmojiStatus(poll._id) }}
       </button>
+      {{poll?._id}}
+      </div>
     }
   </div>
 </div>

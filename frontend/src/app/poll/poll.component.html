@@ -1,10 +1,4 @@
 <div class="question-container">
-
-    @for(poll of polls; track poll?._id){
-    <li>{{poll?.name}} {{poll?._id}} {{poll.date}}</li>
-    }
-
-
     <div class="question">
 
         <img [src]="currentGuessScreenshot"
