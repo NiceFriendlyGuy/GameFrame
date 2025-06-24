@@ -122,23 +122,28 @@ export class PollComponent {
         this.answeredPolls = data;
 
         // Optionally update nbGuesses here
-        if(this.totalGuesses <= 5){
+        if(this.totalGuesses <= 4){
           console.log(this.screenshots?.[this.totalGuesses].url);
           this.selectImage(this.screenshots?.[this.totalGuesses].url); 
         }
         const poll = this.answeredPolls.find(p => p.pollId === this.pollId);
+        
+        console.log(this.totalGuesses);
+        if (answerSelected === this.poll.correctAnswer || this.totalGuesses > 4) {
+          this.pollService.markPollAsAnswered(this.pollId!).subscribe({
+            next: () => {
+              console.log('Marked poll as answered');
+              this.answered = true;
+              this.alreadyAnswered = true;
+            },
+            error: err => console.error('Failed to mark poll as answered:', err)
+          });
+        }
+
       });
 
-      if (answerSelected === this.poll.correctAnswer) {
-        this.pollService.markPollAsAnswered(this.pollId!).subscribe({
-          next: () => {
-            console.log('Marked poll as answered');
-            this.answered = true;
-            this.alreadyAnswered = true;
-          },
-          error: err => console.error('Failed to mark poll as answered:', err)
-        });
-      }
+      
+      
     },
     error: err => {
       console.error('Error recording guess:', err);
