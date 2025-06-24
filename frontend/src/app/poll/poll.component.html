@@ -1,21 +1,26 @@
 <div class="question-container">
     <div class="question">
-
-        <img [src]="currentGuessScreenshot"
-                (click)="openImage(currentGuessScreenshot!)"
-                [alt]="currentGuessScreenshot" />
-        <div class="screenshot-buttons">
-            @for (screenshot of screenshots; track screenshot.url) {
-                @if ($index <= totalGuesses || answered) {
-                    <button (click)="selectImage(screenshot.url)">{{ $index }}</button>
-                } @else {
-                    <button disabled>{{ $index }}</button>
-                }
-            }
-        </div>
-
         <h2>{{poll?.question}}</h2>
-        <h2>Number of guesses: {{ totalGuesses }}</h2>
+        @if(currentGuessScreenshot){
+            <img [src]="currentGuessScreenshot"
+                    (click)="openImage(currentGuessScreenshot!)"
+                    [alt]="currentGuessScreenshot" />
+            <div class="screenshot-buttons">
+                @for (screenshot of screenshots; track screenshot.url) {
+                    @if ($index <= totalGuesses || answered) {
+                        <button (click)="selectImage(screenshot.url)">{{ $index }}</button>
+                    } @else {
+                        <button disabled>{{ $index }}</button>
+                    }
+                }
+                <button (click)="selectAnswer('skipped')">Skip</button>
+
+            </div>
+        }@else{
+            <h3>Loading Images...</h3>
+        }
+        
+        <h3>Number of guesses: {{ totalGuesses }}</h3>
         <div *ngIf="guesses.length > 0">
             <p>Your guesses:</p>
             <ul>
@@ -31,7 +36,7 @@
     </div>
     }
 
-
+    @if(!answered){
     <div class="game-search">
         <div class="search-box">
             <input
@@ -61,11 +66,10 @@
                 <img [src]="selectedGameFromSearch.image" [alt]="selectedGameFromSearch.name" />
             }
             </div>
-            @if(!answered){
                 <button (click)="confirmSelectedAnswerFromSearch(selectedGameFromSearch)">Final answer ?</button>
-            }
         }
     </div>
+    }
 
 
 
@@ -94,7 +98,7 @@
    
     @if(answered){
     <h2>{{ game?.name }}</h2>
-    <img *ngIf="game?.cover" [src]="game.cover" alt="cover" />
+    <img *ngIf="game?.cover" (click)="openImage(game?.cover)" [src]="game.cover" alt="cover" />
 
     <h3>Artworks</h3>
     <div class="image-grid">

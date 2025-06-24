@@ -117,6 +117,7 @@ button:disabled{
   max-width: 90%;
   max-height: 90%;
   border-radius: 8px;
+  box-shadow: 0px 0px 39px -10px #FFFFFF;
 }
 
 .close-btn {
@@ -149,10 +150,10 @@ button:disabled{
 }
 
 .poll-buttons {
+  padding: 50px;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
-    justify-items: center; /* optional: centers buttons horizontally */
   }
 
 /* Button styling */
@@ -160,7 +161,7 @@ button:disabled{
     background-color: #4a90e2;
     color: white;
     border: none;
-    font-size: min(7vw,60px);
+    font-size: min(5vw,40px);
     padding: 2rem 3rem;
     border-radius: 8px;
     cursor: pointer;
