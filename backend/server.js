@@ -1,5 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
+require('dotenv').config();
+
 const app = express();
 const port = 3000;
 
@@ -19,11 +21,16 @@ app.use('/api/users', userRoutes);
 const { fetchGameByName, getAccessToken, fetchGamesByQuery } = require('./igdb.service');
 
 // Replace "mongo" with the service name from docker-compose.yml
-const mongoURI = 'mongodb://mongo:27017/entries';  // Update to 'mongo'
+/*const mongoURI = 'mongodb://mongo:27017/entries';  // Update to 'mongo'
 
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('✅ Connected to MongoDB'))
   .catch((err) => console.error('❌ MongoDB connection error:', err));
+*/
+
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('Connected to MongoDB Atlas'))
+  .catch(err => console.error('Error connecting to MongoDB Atlas', err));
 
 // Define schema + model
 const entrySchema = new mongoose.Schema({
