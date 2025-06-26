@@ -1,4 +1,6 @@
 <div class="question-container">
+    <button (click)="goToNextPoll()">Next Poll</button>
+    @if(!isLoading){
     <div class="question">
         <h2>{{poll?.question}}</h2>
         @if(currentGuessScreenshot){
@@ -35,6 +37,11 @@
         <span class="close-btn">×</span>
     </div>
     }
+
+}
+@else{
+    <h2>Loading...</h2>
+}
 
     @if(!answered){
     <div class="game-search">

@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-poll',
@@ -16,10 +17,10 @@ export class PollComponent {
   // ─── Dependencies ─────────────────────────────────────────────────────────────
   private pollService = inject(PollService);
 
-  constructor(private route: ActivatedRoute, private auth:AuthService) {}
+  constructor(private route: ActivatedRoute, private auth:AuthService, private router: Router) {}
 
   // ─── Poll State ───────────────────────────────────────────────────────────────
-  pollId: string | null = null;
+  pollId: string = "";
   poll: any;
   polls: any[] = [];
 
@@ -33,6 +34,8 @@ export class PollComponent {
 
   screenshots: any[] = [];
   currentGuessScreenshot: string | null = null;
+
+  isLoading: boolean = false;
   
 
 
@@ -51,58 +54,55 @@ export class PollComponent {
 
   // ─── Lifecycle ────────────────────────────────────────────────────────────────
   ngOnInit(): void {
-  this.pollId = this.route.snapshot.paramMap.get('id');
-  this.user = this.auth.getUserEmail();
+  this.route.params.subscribe(params => {
+  this.pollId = params['id'];
+  this.loadPoll(this.pollId); // create this helper function to handle loading logic
+});
+}
 
-  if (this.user) {
-    console.log('Logged in as:', this.user.email);
-    // Fully backend mode for logged-in users
-    this.pollService.getAnsweredQuestions().subscribe(data => {
-      this.answeredPolls = data;
+  loadPoll(pollId: string) {
+    this.isLoading = true;
+    this.user = this.auth.getUserEmail();
 
-      if (this.pollId) {
-        const poll = this.answeredPolls.find(p => p.pollId === this.pollId);
+    if (this.user) {
+      this.pollService.getAnsweredQuestions().subscribe(data => {
+        this.answeredPolls = data;
+
+        const poll = this.answeredPolls.find(p => p.pollId === pollId);
         if (poll) {
           this.alreadyAnswered = poll.answered;
           this.answered = poll.answered;
           this.guesses = poll.guesses.map((g: any) => g.answer);
           this.selectedAnswer = this.guesses[this.guesses.length - 1] || '';
         }
-      }
-    });
-  } else {
-    console.log('Guest user');
-    // Use localStorage for guests
-    if (this.pollId) {
+      });
+    } else {
       const answered = JSON.parse(localStorage.getItem('answeredQuestions') || '{}');
-      const stored = answered[this.pollId];
+      const stored = answered[pollId];
       if (stored) {
         this.alreadyAnswered = true;
         this.answered = true;
         this.selectedAnswer = stored.selected;
       }
     }
-  }
 
-  // Always load full poll data
-  if (this.pollId) {
-    this.pollService.getPollById(this.pollId).subscribe(data => {
+    this.pollService.getPollById(pollId).subscribe(data => {
       this.poll = data;
-      console.log('Fetched poll:', this.poll);
       this.gameName = data.name;
 
       this.pollService.getGameByName(this.gameName).subscribe(gameData => {
         this.game = gameData;
         this.screenshots = (this.game?.screenshots || []).slice(0, 5);
         this.currentGuessScreenshot = this.game?.screenshots?.[0]?.url || null;
+        this.isLoading = false;
       });
+    });
+
+    this.pollService.getPolls().subscribe(data => {
+      this.polls = data;
     });
   }
 
-  this.pollService.getPolls().subscribe(data => {
-    this.polls = data;
-  });
-}
 
 
 
@@ -194,6 +194,25 @@ export class PollComponent {
   selectImage(url: string | null) {
     this.currentGuessScreenshot = url;
   }
+
+  goToNextPoll(): void {
+    if (!this.pollId || this.polls.length === 0) return;
+
+    // Sort by date (make sure 'date' field exists and is ISO 8601 or comparable)
+    const sortedPolls = [...this.polls].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+
+    const currentIndex = sortedPolls.findIndex(p => p._id === this.pollId); // Replace _id with your poll's unique identifier field
+    const nextPoll = sortedPolls[currentIndex + 1];
+
+    if (nextPoll) {
+      this.router.navigate(['/poll', nextPoll._id]); // This matches your routing setup
+    } else {
+      console.log('No next poll available.');
+    }
+  }
+
 
   get firstScreenshot() {
     return this.game?.screenshots?.[0] || null;
