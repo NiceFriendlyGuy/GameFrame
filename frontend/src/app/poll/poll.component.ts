@@ -36,7 +36,9 @@ export class PollComponent {
   currentGuessScreenshot: string | null = null;
 
   isLoading: boolean = false;
-  
+
+  nextPoll: any;
+  currentIndex: any;
 
 
   // ─── Game Metadata ────────────────────────────────────────────────────────────
@@ -63,6 +65,8 @@ export class PollComponent {
   loadPoll(pollId: string) {
     this.isLoading = true;
     this.user = this.auth.getUserEmail();
+
+    
 
     if (this.user) {
       this.pollService.getAnsweredQuestions().subscribe(data => {
@@ -95,7 +99,14 @@ export class PollComponent {
         this.screenshots = (this.game?.screenshots || []).slice(0, 5);
         this.currentGuessScreenshot = this.game?.screenshots?.[0]?.url || null;
         this.isLoading = false;
-      });
+        // Sort by date (make sure 'date' field exists and is ISO 8601 or comparable)
+        const sortedPolls = [...this.polls].sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        );
+
+        this.currentIndex = sortedPolls.findIndex(p => p._id === this.pollId); // Replace _id with your poll's unique identifier field
+        this.nextPoll = sortedPolls[this.currentIndex + 1];
+          });
     });
 
     this.pollService.getPolls().subscribe(data => {
@@ -198,16 +209,10 @@ export class PollComponent {
   goToNextPoll(): void {
     if (!this.pollId || this.polls.length === 0) return;
 
-    // Sort by date (make sure 'date' field exists and is ISO 8601 or comparable)
-    const sortedPolls = [...this.polls].sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-    );
+    
 
-    const currentIndex = sortedPolls.findIndex(p => p._id === this.pollId); // Replace _id with your poll's unique identifier field
-    const nextPoll = sortedPolls[currentIndex + 1];
-
-    if (nextPoll) {
-      this.router.navigate(['/poll', nextPoll._id]); // This matches your routing setup
+    if (this.nextPoll) {
+      this.router.navigate(['/poll', this.nextPoll._id]); // This matches your routing setup
     } else {
       console.log('No next poll available.');
     }

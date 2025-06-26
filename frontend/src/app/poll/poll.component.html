@@ -1,5 +1,7 @@
 <div class="question-container">
-    <button (click)="goToNextPoll()">Next Poll</button>
+    @if(nextPoll){
+        <button (click)="goToNextPoll()">Next Poll</button>
+    }
     @if(!isLoading){
     <div class="question">
         <h2>{{poll?.question}}</h2>
