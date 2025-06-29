@@ -1,9 +1,9 @@
 <div class="questions-container">
   <div class="button-list-container">
-    @for(poll of polls; track poll?._id){
+    @for(poll of polls; track poll?.date){
       <div>
       <button (click)="navigateTo('poll/' + poll._id)">
-        {{ poll?.name }} {{ getEmojiStatus(poll._id) }}
+        {{ poll?.date | date: 'dd/MM/yyyy' }} {{ getEmojiStatus(poll._id) }}
       </button>
       {{poll?._id}}
       </div>

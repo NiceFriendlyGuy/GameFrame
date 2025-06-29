@@ -33,7 +33,7 @@ export class QuestionsComponent {
   }
 
     this.pollService.getPolls().subscribe(data => {
-      this.polls = data;
+      this.polls = data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     });
   }
 

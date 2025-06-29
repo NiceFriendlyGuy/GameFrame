@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 export class PollComponent {
   // ─── Dependencies ─────────────────────────────────────────────────────────────
   private pollService = inject(PollService);
+  
 
   constructor(private route: ActivatedRoute, private auth:AuthService, private router: Router) {}
 
@@ -38,6 +39,7 @@ export class PollComponent {
   isLoading: boolean = false;
 
   nextPoll: any;
+  previousPoll: any;
   currentIndex: any;
 
 
@@ -56,17 +58,19 @@ export class PollComponent {
 
   // ─── Lifecycle ────────────────────────────────────────────────────────────────
   ngOnInit(): void {
-  this.route.params.subscribe(params => {
-  this.pollId = params['id'];
-  this.loadPoll(this.pollId); // create this helper function to handle loading logic
-});
-}
+    this.route.params.subscribe(params => {
+      this.pollId = params['id'];
+      this.loadPoll(this.pollId); // create this helper function to handle loading logic
+    });
+  }
 
   loadPoll(pollId: string) {
     this.isLoading = true;
     this.user = this.auth.getUserEmail();
-
-    
+    this.answered = false;
+    this.guesses = [];
+    this.selectedGameFromSearch = "";
+    this.searchQuery = "";
 
     if (this.user) {
       this.pollService.getAnsweredQuestions().subscribe(data => {
@@ -106,6 +110,7 @@ export class PollComponent {
 
         this.currentIndex = sortedPolls.findIndex(p => p._id === this.pollId); // Replace _id with your poll's unique identifier field
         this.nextPoll = sortedPolls[this.currentIndex + 1];
+        this.previousPoll = sortedPolls[this.currentIndex - 1];
           });
     });
 
@@ -212,11 +217,24 @@ export class PollComponent {
     
 
     if (this.nextPoll) {
-      this.router.navigate(['/poll', this.nextPoll._id]); // This matches your routing setup
+      this.router.navigate(['/poll', this.nextPoll._id]);
     } else {
       console.log('No next poll available.');
     }
   }
+
+  goToPreviousPoll(): void {
+    if (!this.pollId || this.polls.length === 0) return;
+
+    
+
+    if (this.previousPoll) {
+      this.router.navigate(['/poll', this.previousPoll._id]); 
+    } else {
+      console.log('No next poll available.');
+    }
+  }
+
 
 
   get firstScreenshot() {

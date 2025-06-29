@@ -1,7 +1,12 @@
 <div class="question-container">
-    @if(nextPoll){
-        <button (click)="goToNextPoll()">Next Poll</button>
-    }
+    <div class="navButtons">
+        @if(previousPoll){
+            <button (click)="goToPreviousPoll()">Previous Poll</button>
+        }
+        @if(nextPoll){
+            <button (click)="goToNextPoll()">Next Poll</button>
+        }
+    </div>
     @if(!isLoading){
     <div class="question">
         <h2>{{poll?.question}}</h2>
@@ -17,8 +22,11 @@
                         <button disabled>{{ $index }}</button>
                     }
                 }
-                <button (click)="selectAnswer('skipped')">Skip</button>
-
+                @if(!answered){
+                    <button (click)="selectAnswer('skipped')">Skip</button>
+                }@else{
+                    <button disabled (click)="selectAnswer('skipped')">Skip</button>
+                }
             </div>
         }@else{
             <h3>Loading Images...</h3>
@@ -63,9 +71,13 @@
                 @for (game of searchResults; track game.id) {
                     <li (click)="selectGameFromSearch(game)">
                     {{ game.name }}
+                    @if(game.image){
+                        <img [src]="game.image" width="15%">
+                    }   
                     </li>
                 }
                 </ul>
+                
             }
         </div>
         @if (selectedGameFromSearch) {
