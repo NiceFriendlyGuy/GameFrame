@@ -1,44 +1,40 @@
 <div class="question-container">
-    <div class="navButtons">
-        @if(previousPoll){
-            <button (click)="goToPreviousPoll()">Previous Poll</button>
-        }
-        @if(nextPoll){
-            <button (click)="goToNextPoll()">Next Poll</button>
-        }
-    </div>
+
     @if(!isLoading){
     <div class="question">
         <h2>{{poll?.question}}</h2>
         @if(currentGuessScreenshot){
-            <img [src]="currentGuessScreenshot"
-                    (click)="openImage(currentGuessScreenshot!)"
-                    [alt]="currentGuessScreenshot" />
-            <div class="screenshot-buttons">
-                @for (screenshot of screenshots; track screenshot.url) {
-                    @if ($index <= totalGuesses || answered) {
-                        <button (click)="selectImage(screenshot.url)">{{ $index }}</button>
-                    } @else {
-                        <button disabled>{{ $index }}</button>
-                    }
+        <img [src]="currentGuessScreenshot" (click)="openImage(currentGuessScreenshot!)"
+            [alt]="currentGuessScreenshot" />
+        <div>
+        <div class="screenshot-buttons">
+            @for (screenshot of screenshots; track screenshot.url) {
+                @if ($index <= totalGuesses || answered) {
+                    <button (click)="selectImage(screenshot.url)">{{ $index}}</button>
+                } @else {
+                <button disabled>{{ $index }}</button>
                 }
-                @if(!answered){
-                    <button (click)="selectAnswer('skipped')">Skip</button>
-                }@else{
-                    <button disabled (click)="selectAnswer('skipped')">Skip</button>
-                }
-            </div>
-        }@else{
-            <h3>Loading Images...</h3>
-        }
-        
-        <h3>Number of guesses: {{ totalGuesses }}</h3>
-        <div *ngIf="guesses.length > 0">
-            <p>Your guesses:</p>
-            <ul>
-                <li *ngFor="let g of guesses">{{ g }}</li>
-            </ul>
+            }
+            @if(!answered){
+                <button (click)="selectAnswer('skipped')">Skip</button>
+            }@else{
+                <button disabled (click)="selectAnswer('skipped')">Skip</button>
+            }
         </div>
+        <div class="navButtons">
+            @if(previousPoll){
+            <button (click)="goToPreviousPoll()"><<</button>
+            }
+            @if(nextPoll){
+            <button (click)="goToNextPoll()">>></button>
+            }
+        </div>
+        </div>
+        }@else{
+        <h3>Loading Images...</h3>
+        }
+        <h3>Number of guesses: {{ totalGuesses }}</h3>
+
 
     </div>
     @if (selectedImage) {
@@ -48,97 +44,109 @@
     </div>
     }
 
-}
-@else{
-    <h2>Loading...</h2>
-}
+
 
     @if(!answered){
     <div class="game-search">
         <div class="search-box">
-            <input
-                #inputBox
-                type="text"
-                [value]="searchQuery"
-                (input)="onSearchChange(inputBox.value)"
-                placeholder="Search for a game..."
-                class="search-input"
-            />
+            <input #inputBox type="text" [value]="searchQuery" (input)="onSearchChange(inputBox.value)"
+                placeholder="Search for a game..." class="search-input" />
 
 
             @if (searchResults.length > 0) {
-                <ul class="search-results">
+            <ul class="search-results">
                 @for (game of searchResults; track game.id) {
-                    <li (click)="selectGameFromSearch(game)">
+                <li (click)="selectGameFromSearch(game)">
                     {{ game.name }}
                     @if(game.image){
-                        <img [src]="game.image" width="15%">
-                    }   
-                    </li>
+                    <img [src]="game.image" width="15%">
+                    }
+                </li>
                 }
-                </ul>
-                
+            </ul>
+
             }
         </div>
-        @if (selectedGameFromSearch) {
-            <div class="game-preview">
-            <p>You selected: {{ selectedGameFromSearch.name }}</p>
-            @if (selectedGameFromSearch.image) {
-                <img [src]="selectedGameFromSearch.image" [alt]="selectedGameFromSearch.name" />
-            }
-            </div>
-                <button (click)="confirmSelectedAnswerFromSearch(selectedGameFromSearch)">Final answer ?</button>
+
+    </div>
+    }
+    @if (selectedGameFromSearch) {
+    <div class="game-preview">
+        <p>You selected: {{ selectedGameFromSearch.name }}</p>
+        @if (selectedGameFromSearch.image) {
+        <img [src]="selectedGameFromSearch.image" [alt]="selectedGameFromSearch.name" />
         }
+    </div>
+    <button (click)="confirmSelectedAnswerFromSearch(selectedGameFromSearch)">Final answer ?</button>
+    }@else{
+
+    <div *ngIf="guesses.length > 0">
+        <p class="centeredText">Your guesses:</p>
+        <ul>
+            @for (g of guesses; track g) {
+            <li>
+                @if (poll?.correctAnswer === g) {
+                <p>{{ g }} ✅</p>
+                } @else {
+                <p>{{ g }} ❌</p>
+                }
+            </li>
+            }
+        </ul>
     </div>
     }
 
+
+
+    <!--
+    @if(!answered){
+        <div class="poll-buttons">
+            <button (click)="selectAnswer(poll?.answer1)">{{poll?.answer1}}</button>
+            <button (click)="selectAnswer(poll?.answer2)">{{poll?.answer2}}</button>
+            <button (click)="selectAnswer(poll?.answer3)">{{poll?.answer3}}</button>
+            <button (click)="selectAnswer(poll?.answer4)">{{poll?.answer4}}</button>
+        </div>
+    }
+    -->
 
 
     
-    @if(!answered){
-    <div class="poll-buttons">
-        <button (click)="selectAnswer(poll?.answer1)">{{poll?.answer1}}</button>
-        <button (click)="selectAnswer(poll?.answer2)">{{poll?.answer2}}</button>
-        <button (click)="selectAnswer(poll?.answer3)">{{poll?.answer3}}</button>
-        <button (click)="selectAnswer(poll?.answer4)">{{poll?.answer4}}</button>
-    </div>
-    }
-
-    @if(answered){
-    <h2>You answered! {{selectedAnswer}}</h2>
-    }
 
     @if(answered && poll?.correctAnswer === selectedAnswer){
-        <h2>Correct !</h2>
+    <h2>Correct !</h2>
     }
     @else if(answered){
-        <h2>Wrong !</h2>
-        <h2>The correct answer was: {{poll?.correctAnswer}} !</h2>
+    <h2>The correct answer was: {{poll?.correctAnswer}} !</h2>
     }
 
-   
+
     @if(answered){
-    <h2>{{ game?.name }}</h2>
-    <img *ngIf="game?.cover" (click)="openImage(game?.cover)" [src]="game.cover" alt="cover" />
+    <div class="gameShowcase">
+        <div class="gameCover">
+            <h2>{{ game?.name }}</h2>
+            <img *ngIf="game?.cover" (click)="openImage(game?.cover)" [src]="game.cover" alt="cover" />
+        </div>
+        <div class="image-grids">
+            <h3>Artworks</h3>
+            <div class="image-grid">
+                @for (art of game?.artworks; track art.id) {
+                <img [src]="art.url" (click)="openImage(art.url)" [alt]="'artwork'" />
+                }
+            </div>
 
-    <h3>Artworks</h3>
-    <div class="image-grid">
-        @for (art of game?.artworks; track art.id) {
-        <img [src]="art.url" (click)="openImage(art.url)" [alt]="'artwork'" />
-        }
-    </div>
-    
-    
-
-    
-    <h3>Screenshots</h3>
-    <div class="image-grid">
-        @for (shot of game?.screenshots; track shot.id) {
-        <img [src]="shot.url" (click)="openImage(shot.url)" [alt]="'screenshot'" />
-        }
+            <h3>Screenshots</h3>
+            <div class="image-grid">
+                @for (shot of game?.screenshots; track shot.id) {
+                <img [src]="shot.url" (click)="openImage(shot.url)" [alt]="'screenshot'" />
+                }
+            </div>
+        </div>
     </div>
     }
 
 
-    
+
+    }@else{
+    <h2>Loading...</h2>
+    }
 </div>

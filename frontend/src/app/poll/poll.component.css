@@ -35,7 +35,6 @@ button:disabled{
 }
 
 .question-container{
-    padding-top: 50px;
     max-width: 100%;
     display: flex;
     flex-direction: column;
@@ -151,6 +150,12 @@ button:disabled{
     margin-top: 0;
 }
 
+.navButtons{
+  display: flex;
+  gap: 20px;
+  justify-content: space-evenly;
+}
+
 .poll-buttons {
   padding: 50px;
     display: grid;
@@ -206,6 +211,8 @@ button:disabled{
   margin: 0;
   padding: 0;
   border: 1px solid #ccc;
+  max-height: 400px;
+  overflow: auto;
 }
 
 .search-results li {
@@ -231,4 +238,26 @@ button:disabled{
 .game-preview img {
   max-width: 200px;
   border-radius: 8px;
+}
+
+.gameShowcase{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  padding: 0 5% 5% 5%;
+  gap: 40px;
+  align-items: center;
+}
+
+.gameCover img{
+  max-height: 66vh;
+}
+
+.image-grids{
+  display: flex;
+  flex-direction: column;
+}
+
+p.centeredText{
+  text-align: center;
 }

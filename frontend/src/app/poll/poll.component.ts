@@ -183,8 +183,11 @@ export class PollComponent {
   // ─── Search Game Logic ────────────────────────────────────────────────────────
   onSearchChange(query: string): void {
     this.searchQuery = query;
-
-    if (query.length < 3) {
+    if(query.length == 0){
+      this.searchResults = [];
+      this.selectedGameFromSearch = "";
+    }
+    else if (query.length < 3) {
       this.searchResults = [];
       return;
     }
@@ -204,6 +207,9 @@ export class PollComponent {
 
   confirmSelectedAnswerFromSearch(selectedGameFromSearch: string): void{
     this.selectAnswer(this.selectedGameFromSearch.name);
+    this.selectedGameFromSearch = "";
+    this.searchQuery = "";
+
   }
 
   
