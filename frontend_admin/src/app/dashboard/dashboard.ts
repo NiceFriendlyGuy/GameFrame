@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AdminUsersService } from '../admin-users'; 
 import { CommonModule } from '@angular/common'; // Required for *ngFor, etc.
+import { Poll } from '../poll';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,6 +12,10 @@ import { CommonModule } from '@angular/common'; // Required for *ngFor, etc.
 })
 export class Dashboard {
   users: any[] = []; // <-- Make `users` public so the template can access it
+  polls: any[] = [];
+
+  private pollService = inject(Poll);
+  
 
   constructor(private adminUsers: AdminUsersService) {}
 
@@ -23,5 +28,11 @@ export class Dashboard {
         console.error('Failed to load users:', err);
       }
     });
+
+    this.pollService.getPolls().subscribe(data => {
+      this.polls = data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    });
   }
+
+  
 }

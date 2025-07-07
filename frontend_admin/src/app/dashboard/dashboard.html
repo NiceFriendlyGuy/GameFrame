@@ -8,3 +8,9 @@
     <li>{{ user.email }} ({{ user.role }})</li>
   }
 </ul>
+
+<ul>
+  @for (poll of polls; track poll) {
+    <li>{{ poll.name }} ({{ poll.date }})</li>
+  }
+</ul>
