@@ -1,1 +1,10 @@
 <p>dashboard works!</p>
+<h1>ADMIN DASHBOARD</h1>
+
+<h2>All Users</h2>
+
+<ul>
+  @for (user of users; track user) {
+    <li>{{ user.email }} ({{ user.role }})</li>
+  }
+</ul>

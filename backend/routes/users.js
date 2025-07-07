@@ -5,8 +5,6 @@ const User = require('../models/User');
 
 // POST /api/users/guess
 router.post('/guess', async (req, res) => {
-  console.log("CREATING A NEW ENTRY");
-
   const { pollId, guess } = req.body;
   const userEmail = req.headers['x-user-email'];  
 

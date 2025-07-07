@@ -19,7 +19,7 @@ const adminRoutes = require('./routes/admin');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/admin', userRoutes);
+app.use('/api/admin', adminRoutes);
 
 
 const { fetchGameByName, getAccessToken, fetchGamesByQuery } = require('./igdb.service');

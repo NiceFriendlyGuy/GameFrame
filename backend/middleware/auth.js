@@ -1,6 +1,12 @@
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = 'your-super-secret-key'; // To change
 
+module.exports = {
+  authenticateToken,
+  requireAdmin
+};
+
+
 function authenticateToken(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader) return res.status(401).json({ error: 'No token provided' });
@@ -20,6 +26,3 @@ function requireAdmin(req, res, next) {
   }
   next();
 }
-
-
-module.exports = authenticateToken, requireAdmin;
