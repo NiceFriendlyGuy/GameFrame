@@ -31,10 +31,11 @@ router.post('/login', async (req, res) => {
   }
 
 const token = jwt.sign(
-  { userId: user._id, email: user.email }, 
+  { userId: user._id, email: user.email, role: user.role }, 
   JWT_SECRET,
   { expiresIn: '7d' }
 );
+console.log('User logging in:', user.email, 'Role:', user.role);
   res.json({ token });
 });
 

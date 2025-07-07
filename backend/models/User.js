@@ -15,7 +15,8 @@ const answeredPollSchema = new mongoose.Schema({
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   passwordHash: { type: String, required: true },
-  answeredPolls: [answeredPollSchema]
+  answeredPolls: [answeredPollSchema],
+  role: { type: String, enum: ['user', 'admin'], default: 'user' }
 });
 
 module.exports = mongoose.model('User', userSchema);

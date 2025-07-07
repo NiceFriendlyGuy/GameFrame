@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const User = require('../models/User'); // Make sure this path is correct
+const User = require('../models/User');
 
 // POST /api/users/guess
 router.post('/guess', async (req, res) => {

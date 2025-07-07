@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
+const Question = require('./models/Question');
+
 const app = express();
 const port = 3000;
 
@@ -13,9 +15,11 @@ app.use(express.json());
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
+const adminRoutes = require('./routes/admin');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/admin', userRoutes);
 
 
 const { fetchGameByName, getAccessToken, fetchGamesByQuery } = require('./igdb.service');
@@ -37,6 +41,7 @@ const entrySchema = new mongoose.Schema({
   name: String,
 });
 
+//const Entry = require('./models/Question'); //TODO Implement question schema
 const Entry = mongoose.model('Entry', entrySchema, 'entries');  // 3rd param = collection name
 
 // Route to fetch all entries
@@ -50,20 +55,40 @@ app.get('/api/entries', async (req, res) => {
 });
 
 app.post('/api/entries', async (req, res) => {
-  const { name } = req.body;
+  const {
+    name,
+    question,
+    correctAnswer,
+    answer1,
+    answer2,
+    answer3,
+    answer4,
+    date
+  } = req.body;
 
-  if (!name) {
-    return res.status(400).json({ message: 'Name is required.' });
+  if (!name || !question || !correctAnswer || !answer1 || !answer2 || !answer3 || !answer4) {
+    return res.status(400).json({ message: 'Missing required fields.' });
   }
 
   try {
-    const newEntry = new Entry({ name });
-    const savedEntry = await newEntry.save();
-    res.status(201).json(savedEntry);
+    const newQuestion = new Entry({
+      name,
+      question,
+      correctAnswer,
+      answer1,
+      answer2,
+      answer3,
+      answer4,
+      date
+    });
+
+    const saved = await newQuestion.save();
+    res.status(201).json(saved);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
+
 
 // Route to fetch the latest question by date
 app.get('/api/entries/latest', async (req, res) => {
