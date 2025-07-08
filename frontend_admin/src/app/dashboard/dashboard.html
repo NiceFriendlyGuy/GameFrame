@@ -9,8 +9,14 @@
   }
 </ul>
 
-<ul>
-  @for (poll of polls; track poll) {
-    <li>{{ poll.name }} ({{ poll.date }})</li>
-  }
-</ul>
+@for(poll of polls; track poll?.date){
+  <div>
+    <button (click)="navigateTo('question/' + poll._id)">
+      {{poll?.name}} {{ poll?.date | date: 'dd/MM/yyyy' }} {{poll?._id}}
+    </button>
+  </div>
+}
+
+<button (click)="navigateTo('new')">
+    Create new
+</button>

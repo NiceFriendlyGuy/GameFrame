@@ -16,4 +16,16 @@ export class Poll {
     return this.http.get<any[]>(this.apiUrl);
   }
 
+  getPollById(id: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
+
+  getGameByName(name: string): Observable<any> {
+    return this.http.get<any>(`http://localhost:3000/api/games/${name}`);
+  }
+
+  searchGames(query: string): Observable<any[]> {
+    return this.http.get<any[]>(`http://localhost:3000/api/search/${encodeURIComponent(query)}`);
+  }
+
 }

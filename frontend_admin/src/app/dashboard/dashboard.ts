@@ -2,6 +2,8 @@ import { Component, inject } from '@angular/core';
 import { AdminUsersService } from '../admin-users'; 
 import { CommonModule } from '@angular/common'; // Required for *ngFor, etc.
 import { Poll } from '../poll';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -17,7 +19,7 @@ export class Dashboard {
   private pollService = inject(Poll);
   
 
-  constructor(private adminUsers: AdminUsersService) {}
+  constructor(private adminUsers: AdminUsersService, private router: Router) {}
 
   ngOnInit(): void {
     this.adminUsers.getUsers().subscribe({
@@ -32,6 +34,11 @@ export class Dashboard {
     this.pollService.getPolls().subscribe(data => {
       this.polls = data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     });
+  }
+
+  navigateTo(page: string): void {
+    console.log("Going to " + page);
+    this.router.navigate([page]);
   }
 
   
