@@ -68,21 +68,23 @@
     </div>
     }@else{
 
-    <div *ngIf="guesses.length > 0">
-        <p class="centeredText">Your guesses:</p>
-        <ul>
-            @for (g of guesses; track g) {
-            <li>
-                @if (poll?.correctAnswer === g) {
-                <p>{{ g }} ✅</p>
-                } @else {
-                <p>{{ g }} ❌</p>
+    @if(guesses.length > 0){
+        <div>
+            <p class="centeredText">Your guesses:</p>
+            <ul>
+                @for (g of guesses; track g) {
+                <li>
+                    @if (poll?.correctAnswer === g) {
+                    <p>{{ g }} ✅</p>
+                    } @else {
+                    <p>{{ g }} ❌</p>
+                    }
+                </li>
                 }
-            </li>
-            }
-        </ul>
-    </div>
+            </ul>
+        </div>
     }
+}
 
 
 

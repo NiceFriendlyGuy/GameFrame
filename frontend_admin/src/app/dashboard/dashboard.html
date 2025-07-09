@@ -12,8 +12,9 @@
 @for(poll of polls; track poll?.date){
   <div>
     <button (click)="navigateTo('question/' + poll._id)">
-      {{poll?.name}} {{ poll?.date | date: 'dd/MM/yyyy' }} {{poll?._id}}
+      {{poll?.name}} {{ poll?.date | date: 'dd/MM/yyyy' }} 
     </button>
+    {{poll?._id}}
   </div>
 }
 
