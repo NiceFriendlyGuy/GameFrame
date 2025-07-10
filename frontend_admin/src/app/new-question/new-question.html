@@ -12,14 +12,6 @@
                 <button (click)="selectImage(screenshot.url)">{{ $index}}</button>
             }
         </div>
-        <div class="navButtons">
-            @if(previousPoll){
-            <button (click)="goToPreviousPoll()"><<</button>
-            }
-            @if(nextPoll){
-            <button (click)="goToNextPoll()">>></button>
-            }
-        </div>
         </div>
         }@else{
         <h3>Loading Images...</h3>
@@ -32,8 +24,6 @@
         <span class="close-btn">×</span>
     </div>
     }
-
-
 
 
     <div class="game-search">
@@ -67,19 +57,6 @@
         }
     </div>
     }
-
-
-
-    <!--
-    @if(!answered){
-        <div class="poll-buttons">
-            <button (click)="selectAnswer(poll?.answer1)">{{poll?.answer1}}</button>
-            <button (click)="selectAnswer(poll?.answer2)">{{poll?.answer2}}</button>
-            <button (click)="selectAnswer(poll?.answer3)">{{poll?.answer3}}</button>
-            <button (click)="selectAnswer(poll?.answer4)">{{poll?.answer4}}</button>
-        </div>
-    }
-    -->
 
     <div class="gameShowcase">
         <div class="gameCover">
