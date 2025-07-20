@@ -31,7 +31,7 @@ export class NewQuestion {
   selectedAnswer = '';
   answered = false;
   alreadyAnswered = false;
-  guesses: string[] = []; // array to store guess history
+  guesses: string[] = []; 
 
   screenshots: any[] = [];
   currentGuessScreenshot: string | null = null;
@@ -61,7 +61,7 @@ export class NewQuestion {
 
 ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.loadGame(this.gameName); // create this helper function to handle loading logic
+      this.loadGame(this.gameName); 
     });
   }
 
