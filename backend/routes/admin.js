@@ -22,5 +22,39 @@ router.get('/users/findAll', auth.authenticateToken, auth.requireAdmin, async (r
   }
 });
 
+app.post('/api/entries', auth.authenticateToken, auth.requireAdmin, async (req, res) => {
+  const {
+    name,
+    question,
+    correctAnswer,
+    answer1,
+    answer2,
+    answer3,
+    answer4,
+    date
+  } = req.body;
+
+  if (!name || !question || !correctAnswer || !answer1 || !answer2 || !answer3 || !answer4) {
+    return res.status(400).json({ message: 'Missing required fields.' });
+  }
+
+  try {
+    const newQuestion = new Entry({
+      name,
+      question,
+      correctAnswer,
+      answer1,
+      answer2,
+      answer3,
+      answer4,
+      date
+    });
+
+    const saved = await newQuestion.save();
+    res.status(201).json(saved);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 module.exports = router;

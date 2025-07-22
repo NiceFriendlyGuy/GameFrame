@@ -134,30 +134,6 @@ ngOnInit(): void {
     this.currentGuessScreenshot = url;
   }
 
-  goToNextPoll(): void {
-    if (!this.pollId || this.polls.length === 0) return;
-
-
-    if (this.nextPoll) {
-      this.router.navigate(['/question', this.nextPoll._id]);
-    } else {
-      console.log('No next poll available.');
-    }
-  }
-
-  goToPreviousPoll(): void {
-    if (!this.pollId || this.polls.length === 0) return;
-
-    
-
-    if (this.previousPoll) {
-      this.router.navigate(['/question', this.previousPoll._id]); 
-    } else {
-      console.log('No next poll available.');
-    }
-  }
-
-
 
   get firstScreenshot() {
     return this.game?.screenshots?.[0] || null;
@@ -179,8 +155,36 @@ ngOnInit(): void {
     return this.game?.screenshots?.[4] || null;
   }
 
-  get totalGuesses(): number {
-    const poll = this.answeredPolls.find(p => p.pollId === this.pollId);
-    return poll?.guesses.length || 0;
+
+ createNewEntry(): void {
+  if (
+    !this.gameName 
+  ) {
+    alert('Please fill in all required fields.');
+    return;
   }
+
+  const newEntry = {
+    name: this.gameName,
+    question: "Which game is depicted in this screenshot ?",
+    correctAnswer: this.gameName,
+    answer1: this.gameName,
+    answer2: this.gameName,
+    answer3: this.gameName,
+    answer4: this.gameName,
+    date: new Date().toISOString() // optional: fallback to current date
+  };
+
+  this.Poll.createEntry(newEntry).subscribe({
+    next: (res) => {
+      console.log('Entry created successfully:', res);
+      // optionally reset inputs or show a success message
+    },
+    error: (err) => {
+      console.error('Failed to create entry:', err);
+      alert('There was an error saving the entry.');
+    }
+  });
+}
+
 }
