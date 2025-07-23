@@ -174,7 +174,7 @@ ngOnInit(): void {
     answer4: this.gameName,
     date: new Date().toISOString() // optional: fallback to current date
   };
-
+  console.log('SENDING ENTRY:', newEntry);
   this.Poll.createEntry(newEntry).subscribe({
     next: (res) => {
       console.log('Entry created successfully:', res);

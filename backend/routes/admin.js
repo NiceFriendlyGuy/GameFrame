@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
 const User = require('../models/User');
+const Question = require('../models/Question');
 
 router.get('/dashboard', auth.authenticateToken, auth.requireAdmin, (req, res) => {
   res.json({ message: 'Welcome, Admin!' });
@@ -22,7 +23,7 @@ router.get('/users/findAll', auth.authenticateToken, auth.requireAdmin, async (r
   }
 });
 
-app.post('/api/entries', auth.authenticateToken, auth.requireAdmin, async (req, res) => {
+router.post('/entries', auth.authenticateToken, auth.requireAdmin, async (req, res) => {
   const {
     name,
     question,
@@ -39,7 +40,7 @@ app.post('/api/entries', auth.authenticateToken, auth.requireAdmin, async (req, 
   }
 
   try {
-    const newQuestion = new Entry({
+    const newQuestion = new Question({
       name,
       question,
       correctAnswer,

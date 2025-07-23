@@ -47,7 +47,7 @@ const Entry = mongoose.model('Entry', entrySchema, 'entries');  // 3rd param = c
 // Route to fetch all entries
 app.get('/api/entries', async (req, res) => {
   try {
-    const entries = await Entry.find();
+    const entries = await Question.find();
     res.json(entries);
   } catch (err) {
     res.status(500).json({ message: err.message });

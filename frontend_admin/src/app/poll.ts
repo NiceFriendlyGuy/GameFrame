@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 export class Poll {
 
   private apiUrl = 'http://localhost:3000/api/entries';
+  private apiAdminUrl = 'http://localhost:3000/api/admin/entries';
 
 
   constructor(private http: HttpClient) { }
@@ -28,7 +29,7 @@ export class Poll {
     return this.http.get<any[]>(`http://localhost:3000/api/search/${encodeURIComponent(query)}`);
   }
 
-  createEntry(entry: any): Observable<any> {
+  createEntry(question: any): Observable<any> {
   const token = localStorage.getItem('token');
 
   if (!token) {
@@ -39,7 +40,7 @@ export class Poll {
     Authorization: `Bearer ${token}`
   });
 
-  return this.http.post<any>(this.apiUrl, entry, { headers });
+  return this.http.post<any>(this.apiAdminUrl, question, { headers });
 }
 
 }
