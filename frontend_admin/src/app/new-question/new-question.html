@@ -2,7 +2,7 @@
 
     @if(!isLoading){
     <div class="question">
-        <h2>{{poll?.question}}</h2>
+        <!--<h2>{{poll?.question}}</h2>-->
         @if(currentGuessScreenshot){
         <img [src]="currentGuessScreenshot" (click)="openImage(currentGuessScreenshot!)"
             [alt]="currentGuessScreenshot" />

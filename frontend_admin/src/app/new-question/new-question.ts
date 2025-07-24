@@ -1,7 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { Poll } from '../poll';
-import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 
@@ -13,34 +11,14 @@ import { Router } from '@angular/router';
 })
 export class NewQuestion {
 
-
-
   private Poll = inject(Poll);
-  
 
   constructor(private route: ActivatedRoute, private router: Router) {}
 
   // ─── Poll State ───────────────────────────────────────────────────────────────
-  pollId: string = "";
-  poll: any;
-  polls: any[] = [];
-
-  user: any = null;
-  answeredPolls: any[] = [];
-
-  selectedAnswer = '';
-  answered = false;
-  alreadyAnswered = false;
-  guesses: string[] = []; 
-
   screenshots: any[] = [];
   currentGuessScreenshot: string | null = null;
-
   isLoading: boolean = false;
-
-  nextPoll: any;
-  previousPoll: any;
-  currentIndex: any;
 
 
   // ─── Game Metadata ────────────────────────────────────────────────────────────
@@ -67,29 +45,16 @@ ngOnInit(): void {
 
   loadGame(gameName: string) {
     this.isLoading = true;
-    this.answered = false;
-    this.guesses = [];
     this.selectedGameFromSearch = "";
     this.searchQuery = "";
 
-      this.Poll.getGameByName(this.gameName).subscribe(gameData => {
-        this.game = gameData;
-        this.screenshots = (this.game?.screenshots || []).slice(0, 5);
-        this.currentGuessScreenshot = this.game?.screenshots?.[0]?.url || null;
-        this.isLoading = false;
-        // Sort by date (make sure 'date' field exists and is ISO 8601 or comparable)
-        const sortedPolls = [...this.polls].sort(
-          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-        );
-
-        this.currentIndex = sortedPolls.findIndex(p => p._id === this.pollId); // Replace _id with your poll's unique identifier field
-        this.nextPoll = sortedPolls[this.currentIndex + 1];
-        this.previousPoll = sortedPolls[this.currentIndex - 1];
-          });
-
-    this.Poll.getPolls().subscribe(data => {
-      this.polls = data;
+    this.Poll.getGameByName(gameName).subscribe(gameData => {
+      this.game = gameData;
+      this.screenshots = (this.game?.screenshots || []).slice(0, 5);
+      this.currentGuessScreenshot = this.game?.screenshots?.[0]?.url || null;
+      this.isLoading = false;
     });
+
   }
 
 
@@ -158,7 +123,7 @@ ngOnInit(): void {
 
  createNewEntry(): void {
   if (
-    !this.gameName 
+    !this.gameName
   ) {
     alert('Please fill in all required fields.');
     return;
@@ -166,19 +131,13 @@ ngOnInit(): void {
 
   const newEntry = {
     name: this.gameName,
-    question: "Which game is depicted in this screenshot ?",
     correctAnswer: this.gameName,
-    answer1: this.gameName,
-    answer2: this.gameName,
-    answer3: this.gameName,
-    answer4: this.gameName,
     date: new Date().toISOString() // optional: fallback to current date
   };
   console.log('SENDING ENTRY:', newEntry);
   this.Poll.createEntry(newEntry).subscribe({
     next: (res) => {
       console.log('Entry created successfully:', res);
-      // optionally reset inputs or show a success message
     },
     error: (err) => {
       console.error('Failed to create entry:', err);

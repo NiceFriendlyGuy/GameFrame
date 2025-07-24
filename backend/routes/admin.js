@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const User = require('../models/User');
 const Question = require('../models/Question');
+const Entry = require('../models/Entry');
 
 router.get('/dashboard', auth.authenticateToken, auth.requireAdmin, (req, res) => {
   res.json({ message: 'Welcome, Admin!' });
@@ -26,28 +27,18 @@ router.get('/users/findAll', auth.authenticateToken, auth.requireAdmin, async (r
 router.post('/entries', auth.authenticateToken, auth.requireAdmin, async (req, res) => {
   const {
     name,
-    question,
     correctAnswer,
-    answer1,
-    answer2,
-    answer3,
-    answer4,
     date
   } = req.body;
 
-  if (!name || !question || !correctAnswer || !answer1 || !answer2 || !answer3 || !answer4) {
+  if (!name || !correctAnswer) {
     return res.status(400).json({ message: 'Missing required fields.' });
   }
 
   try {
-    const newQuestion = new Question({
+    const newQuestion = new Entry({
       name,
-      question,
       correctAnswer,
-      answer1,
-      answer2,
-      answer3,
-      answer4,
       date
     });
 

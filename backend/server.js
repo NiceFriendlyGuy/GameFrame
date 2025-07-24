@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const Question = require('./models/Question');
+const Entry = require('./models/Entry');
 
 const app = express();
 const port = 3000;
@@ -24,37 +24,20 @@ app.use('/api/admin', adminRoutes);
 
 const { fetchGameByName, getAccessToken, fetchGamesByQuery } = require('./igdb.service');
 
-// Replace "mongo" with the service name from docker-compose.yml
-/*const mongoURI = 'mongodb://mongo:27017/entries';  // Update to 'mongo'
-
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('✅ Connected to MongoDB'))
-  .catch((err) => console.error('❌ MongoDB connection error:', err));
-*/
-
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Connected to MongoDB Atlas'))
   .catch(err => console.error('Error connecting to MongoDB Atlas', err));
 
-// Define schema + model
-const entrySchema = new mongoose.Schema({
-  name: String,
-});
-
-//const Entry = require('./models/Question'); //TODO Implement question schema
-const Entry = mongoose.model('Entry', entrySchema, 'entries');  // 3rd param = collection name
 
 // Route to fetch all entries
 app.get('/api/entries', async (req, res) => {
   try {
-    const entries = await Question.find();
+    const entries = await Entry.find();
     res.json(entries);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
-
-
 
 // Route to fetch the latest question by date
 app.get('/api/entries/latest', async (req, res) => {

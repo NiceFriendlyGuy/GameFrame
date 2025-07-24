@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+/*const mongoose = require('mongoose');
 
 const questionSchema = new mongoose.Schema({
   name: { type: String, required: true }, // Game name
@@ -11,4 +11,4 @@ const questionSchema = new mongoose.Schema({
   date: { type: Date, default: Date.now }, // Optional default if missing
 });
 
-module.exports = mongoose.model('Question', questionSchema);
+module.exports = mongoose.model('Question', questionSchema);*/
