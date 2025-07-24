@@ -22,7 +22,7 @@ export class NewQuestion {
 
 
   // ─── Game Metadata ────────────────────────────────────────────────────────────
-  gameName = 'God of War';
+  gameName = 'Cyberpunk 2077';
   game: any = null;
 
   // ─── Image Modal ──────────────────────────────────────────────────────────────
@@ -33,9 +33,7 @@ export class NewQuestion {
   searchQuery = '';
   searchResults: any[] = [];
   selectedGameFromSearch: any = null;
-
-
-
+  
 
 ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -56,8 +54,6 @@ ngOnInit(): void {
     });
 
   }
-
-
 
   // ─── Image Viewer ─────────────────────────────────────────────────────────────
   openImage(url: string): void {

@@ -25,14 +25,6 @@ export class Question {
   poll: any;
   polls: any[] = [];
 
-  user: any = null;
-  answeredPolls: any[] = [];
-
-  selectedAnswer = '';
-  answered = false;
-  alreadyAnswered = false;
-  guesses: string[] = []; // array to store guess history
-
   screenshots: any[] = [];
   currentGuessScreenshot: string | null = null;
 
@@ -68,8 +60,6 @@ ngOnInit(): void {
 
   loadPoll(pollId: string) {
     this.isLoading = true;
-    this.answered = false;
-    this.guesses = [];
     this.selectedGameFromSearch = "";
     this.searchQuery = "";
 
@@ -183,11 +173,6 @@ ngOnInit(): void {
 
   get fifthScreenshot() {
     return this.game?.screenshots?.[4] || null;
-  }
-
-  get totalGuesses(): number {
-    const poll = this.answeredPolls.find(p => p.pollId === this.pollId);
-    return poll?.guesses.length || 0;
   }
 
 }
