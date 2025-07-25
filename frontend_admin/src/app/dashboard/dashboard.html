@@ -8,7 +8,7 @@
     <li>{{ user.email }} ({{ user.role }})</li>
   }
 </ul>
-
+<div class="questions-list">
 @for(poll of polls; track poll?.date){
   <div>
     <button (click)="navigateTo('question/' + poll._id)">
@@ -17,7 +17,7 @@
     {{poll?._id}}
   </div>
 }
-
-<button (click)="navigateTo('new')">
+</div>
+<button class="create-new" (click)="navigateTo('new')">
     Create new
 </button>

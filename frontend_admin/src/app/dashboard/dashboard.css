@@ -1,0 +1,41 @@
+.questions-list{
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.create-new{
+    position: fixed;
+    right: 15px;
+    bottom: 15px;
+}
+
+button {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    font-size: min(3vw,30px);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+button:hover {
+    background-color: #357ab8;
+    transform: translateY(-2px);
+}
+
+button:disabled{
+    background-color: #c8d7e7;
+    color: white;
+    border: none;
+    font-size: min(3vw,30px);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
