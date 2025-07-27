@@ -24,6 +24,7 @@ export class NewQuestion {
   // ─── Game Metadata ────────────────────────────────────────────────────────────
   gameName = 'Cyberpunk 2077';
   game: any = null;
+  date: any = null;
 
   // ─── Image Modal ──────────────────────────────────────────────────────────────
   selectedImage: string | null = null;

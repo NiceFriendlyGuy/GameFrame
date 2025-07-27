@@ -1,23 +1,27 @@
 <p>dashboard works!</p>
 <h1>ADMIN DASHBOARD</h1>
+<div class="dashboard">
 
-<h2>All Users</h2>
-
-<ul>
-  @for (user of users; track user) {
+<div>
+  <h2>All Users</h2>
+  <ul>
+    @for (user of users; track user) {
     <li>{{ user.email }} ({{ user.role }})</li>
-  }
-</ul>
+    }
+  </ul>
+</div>
+
 <div class="questions-list">
-@for(poll of polls; track poll?.date){
+  @for(poll of polls; track poll?.date){
   <div>
     <button (click)="navigateTo('question/' + poll._id)">
-      {{poll?.name}} {{ poll?.date | date: 'dd/MM/yyyy' }} 
+      {{poll?.name}} {{ poll?.date | date: 'dd/MM/yyyy' }}
     </button>
     {{poll?._id}}
   </div>
-}
+  }
+</div>
 </div>
 <button class="create-new" (click)="navigateTo('new')">
-    Create new
+  Create new
 </button>

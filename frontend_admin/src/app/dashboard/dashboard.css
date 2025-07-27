@@ -1,3 +1,8 @@
+.dashboard{
+    display: flex;
+    
+}
+
 .questions-list{
     display: flex;
     gap: 20px;
@@ -8,7 +13,7 @@
 .create-new{
     position: fixed;
     right: 15px;
-    bottom: 15px;
+    bottom: 15pxw;
 }
 
 button {
