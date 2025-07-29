@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Poll } from '../poll';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, httpResource } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 
@@ -47,6 +47,9 @@ export class Question {
   searchQuery = '';
   searchResults: any[] = [];
   selectedGameFromSearch: any = null;
+
+
+  
 
 
 

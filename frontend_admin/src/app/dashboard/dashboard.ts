@@ -3,6 +3,10 @@ import { AdminUsersService } from '../admin-users';
 import { CommonModule } from '@angular/common'; // Required for *ngFor, etc.
 import { Poll } from '../poll';
 import { Router } from '@angular/router';
+import { HttpClient, HttpHeaders, httpResource } from '@angular/common/http';
+import { PollListResponse } from '../common/models/poll';
+import { UserListResponse } from '../common/models/user';
+
 
 
 @Component({
@@ -15,31 +19,27 @@ import { Router } from '@angular/router';
 export class Dashboard {
   users: any[] = []; // <-- Make `users` public so the template can access it
   polls: any[] = [];
+  constructor(private adminUsers: AdminUsersService, private router: Router, private http: HttpClient) {}
 
-  private pollService = inject(Poll);
-  
+  readonly pollRessource = httpResource<PollListResponse>(() =>
+    `http://localhost:3000/api/entries`
+  );
 
-  constructor(private adminUsers: AdminUsersService, private router: Router) {}
+  readonly userListResource = httpResource<UserListResponse>(() => {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('No auth token found.');
 
-  ngOnInit(): void {
-    this.adminUsers.getUsers().subscribe({
-      next: data => {
-        this.users = data;
-      },
-      error: err => {
-        console.error('Failed to load users:', err);
+    return {
+      url: `http://localhost:3000/api/admin/users/findAll`,
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`
       }
-    });
-
-    this.pollService.getPolls().subscribe(data => {
-      this.polls = data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-    });
-  }
+    };
+  });
 
   navigateTo(page: string): void {
     console.log("Going to " + page);
     this.router.navigate([page]);
   }
-
-  
 }

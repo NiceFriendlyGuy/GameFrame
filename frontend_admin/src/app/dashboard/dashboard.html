@@ -2,25 +2,27 @@
 <h1>ADMIN DASHBOARD</h1>
 <div class="dashboard">
 
-<div>
-  <h2>All Users</h2>
-  <ul>
-    @for (user of users; track user) {
-    <li>{{ user.email }} ({{ user.role }})</li>
-    }
-  </ul>
-</div>
-
-<div class="questions-list">
-  @for(poll of polls; track poll?.date){
   <div>
-    <button (click)="navigateTo('question/' + poll._id)">
-      {{poll?.name}} {{ poll?.date | date: 'dd/MM/yyyy' }}
-    </button>
-    {{poll?._id}}
+    <h2>All Users</h2>
+    <ul>
+      @for (user of userListResource.value(); track user) {
+        <li>{{user.email}}</li>
+      }
+    </ul>
   </div>
-  }
-</div>
+
+  <div class="questions-list">
+
+    <ul>
+      @for (poll of pollRessource.value(); track poll) {
+      <li>
+        <button (click)="navigateTo('question/' + poll._id)">
+          {{poll.name}} : {{poll.date | date: 'dd/MM/yyyy'}}
+        </button>
+      </li>
+      }
+    </ul>
+  </div>
 </div>
 <button class="create-new" (click)="navigateTo('new')">
   Create new
