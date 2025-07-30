@@ -1,10 +1,9 @@
-import { Component, effect, inject, signal } from '@angular/core';
-import { Poll } from '../poll';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { httpResource } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { PollListResponse, Poll as PollModel } from '../common/models/poll';
-import { IGDB } from '../common/models/IGDB';
+import { IGDB, Screenshots } from '../common/models/IGDB';
 
 
 @Component({
@@ -14,33 +13,32 @@ import { IGDB } from '../common/models/IGDB';
   styleUrl: './question.css'
 })
 export class Question {
-  private Poll = inject(Poll);
+
   private route = inject(ActivatedRoute);
 
+  readonly gameName = signal<string>('');
+  readonly id = signal(null);
+  readonly previousPoll = signal<PollModel | null>(null);
+  readonly nextPoll = signal<PollModel | null>(null);
 
-  public gameName = signal<string>('');
+  public polls: PollModel[] = [];
 
-  public id = signal(this.route.snapshot.paramMap.get('id'));
+  public screenshots: Screenshots[] = [];
+  public currentGuessScreenshot: string | null = null;
 
+  public isLoading: boolean = false;
 
-
-  previousPoll = signal<PollModel | null>(null);
-  nextPoll = signal<PollModel | null>(null);
-
- 
-
+  public selectedImage: string | null = null;
 
   constructor(private router: Router) {
     this.isLoading = true;
 
     effect(() => {
-
       const poll = this.pollRessource.value();
       if (!poll) return;
       this.gameName.set(poll.name);
       this.screenshots = (this.IGDBRessource?.value()?.screenshots || []).slice(0, 5);
       this.currentGuessScreenshot = this.IGDBRessource?.value()?.screenshots?.[0]?.url || null;
-      this.isLoading = false;
     });
 
     effect(() => {
@@ -56,7 +54,6 @@ export class Question {
 
       if (!list || !currentId) return;
 
-      // Optional: sort list by date or whatever your intended order is
       const sortedList = [...list].sort((a, b) =>
         new Date(a.date).getTime() - new Date(b.date).getTime()
       );
@@ -67,6 +64,10 @@ export class Question {
       this.nextPoll.set(index < sortedList.length - 1 ? sortedList[index + 1] : null);
     });
 
+
+    effect(() => {
+      this.isLoading = !this.isFullyLoaded();
+    });
   }
 
   readonly pollListRessource = httpResource<PollListResponse>(() =>
@@ -82,32 +83,9 @@ export class Question {
     return poll?.name ? `http://localhost:3000/api/games/${poll.name}` : undefined;
   });
 
-
-
-  // ─── Poll State ───────────────────────────────────────────────────────────────
-  poll: any;
-  polls: any[] = [];
-
-  screenshots: any[] = [];
-  currentGuessScreenshot: string | null = null;
-
-  isLoading: boolean = false;
-
-  currentIndex: any;
-
-
-  // ─── Game Metadata ────────────────────────────────────────────────────────────
-
-  // ─── Image Modal ──────────────────────────────────────────────────────────────
-  selectedImage: string | null = null;
-
-
-  // ─── Search State ─────────────────────────────────────────────────────────────
-  searchQuery = '';
-  searchResults: any[] = [];
-  selectedGameFromSearch: any = null;
-
-
+  readonly isFullyLoaded = computed(() =>
+    !!this.pollRessource.value() && !!this.IGDBRessource.value()
+  );
 
 
   ngOnInit(): void {
@@ -126,32 +104,6 @@ export class Question {
   closeImage(): void {
     this.selectedImage = null;
   }
-
-  // ─── Search Game Logic ────────────────────────────────────────────────────────
-  onSearchChange(query: string): void {
-    this.searchQuery = query;
-    if (query.length == 0) {
-      this.searchResults = [];
-      this.selectedGameFromSearch = "";
-    }
-    else if (query.length < 3) {
-      this.searchResults = [];
-      return;
-    }
-
-    this.Poll.searchGames(query).subscribe({
-      next: results => this.searchResults = results,
-      error: err => console.error('Search error:', err)
-    });
-  }
-
-  selectGameFromSearch(game: any): void {
-    this.selectedGameFromSearch = game;
-
-    this.searchQuery = game.name;
-    this.searchResults = [];
-  }
-
 
   selectImage(url: string | null) {
     this.currentGuessScreenshot = url;

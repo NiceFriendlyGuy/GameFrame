@@ -30,17 +30,17 @@ export class Poll {
   }
 
   createEntry(question: any): Observable<any> {
-  const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
 
-  if (!token) {
-    throw new Error('No auth token found.');
-  }
+    if (!token) {
+      throw new Error('No auth token found.');
+    }
 
-  const headers = new HttpHeaders({
-    Authorization: `Bearer ${token}`
-  });
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
 
-  return this.http.post<any>(this.apiAdminUrl, question, { headers });
+    return this.http.post<any>(this.apiAdminUrl, question, { headers });
 }
 
 }

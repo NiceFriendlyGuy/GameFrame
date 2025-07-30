@@ -9,7 +9,7 @@
             [alt]="currentGuessScreenshot" />
         <div>
         <div class="screenshot-buttons">
-            @for (screenshot of IGDBRessource.value()?.screenshots; track screenshot) {
+            @for (screenshot of IGDBRessource.value()?.screenshots?.slice(0, 5); track screenshot) {
                 <button (click)="selectImage(screenshot.url)">{{$index}}</button>
             }
         </div>

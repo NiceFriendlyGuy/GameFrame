@@ -8,7 +8,7 @@
             [alt]="currentGuessScreenshot" />
         <div>
         <div class="screenshot-buttons">
-            @for (screenshot of screenshots; track screenshot.url) {
+            @for (screenshot of IGDBRessource.value()?.screenshots?.slice(0, 5); track screenshot) {
                 <button (click)="selectImage(screenshot.url)">{{ $index}}</button>
             }
         </div>
@@ -60,20 +60,20 @@
 
     <div class="gameShowcase">
         <div class="gameCover">
-            <h2>{{ game?.name }}</h2>
-            <img [src]="game?.cover" (click)="openImage(game?.cover)" [src]="game.cover" alt="cover" />
+            <h2>{{ IGDBRessource.value()?.name }}</h2>
+            <img [src]="IGDBRessource.value()?.cover" (click)="openImage(IGDBRessource.value()?.cover)" [src]="IGDBRessource.value()?.cover" alt="cover" />
         </div>
         <div class="image-grids">
             <h3>Artworks</h3>
             <div class="image-grid">
-                @for (art of game?.artworks; track art.id) {
+                @for (art of IGDBRessource.value()?.artworks; track art) {
                 <img [src]="art.url" (click)="openImage(art.url)" [alt]="'artwork'" />
                 }
             </div>
 
             <h3>Screenshots</h3>
             <div class="image-grid">
-                @for (shot of game?.screenshots; track shot.id) {
+                @for (shot of IGDBRessource.value()?.screenshots; track shot) {
                 <img [src]="shot.url" (click)="openImage(shot.url)" [alt]="'screenshot'" />
                 }
             </div>
