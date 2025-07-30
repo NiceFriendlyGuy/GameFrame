@@ -1,13 +1,19 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { Poll } from '../poll';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule, httpResource } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
+import { PollListResponse, Poll as PollModel } from '../common/models/poll';
+import { IGDB } from '../common/models/IGDB';
+
+
+import { JsonPipe } from '@angular/common';
+
 
 @Component({
   selector: 'app-question',
-  imports: [],
+  imports: [JsonPipe],
   templateUrl: './question.html',
   styleUrl: './question.css'
 })
@@ -16,12 +22,36 @@ export class Question {
 
 
  private Poll = inject(Poll);
+ private route = inject(ActivatedRoute);
   
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor( private router: Router) {
+    this.isLoading = true;
+    this.id.set(this.route.snapshot.paramMap.get('id'));
+
+    effect(() => {
+      
+      const poll = this.pollRessource.value();
+      if (!poll) return;
+      this.gameName = poll.name;
+      this.screenshots = (this.IGDBRessource?.value()?.screenshots || []).slice(0, 5);
+      this.currentGuessScreenshot = this.IGDBRessource?.value()?.screenshots?.[0]?.url || null;
+      this.isLoading = false;
+    });
+
+    effect(() => {
+      const pollList = this.pollListRessource.value();
+      if (!pollList) return;
+      this.polls = pollList;
+    });
+  }
+
+
+  
 
   // ─── Poll State ───────────────────────────────────────────────────────────────
   pollId: string = "";
+  id = signal(this.route.snapshot.paramMap.get('id'));
   poll: any;
   polls: any[] = [];
 
@@ -36,7 +66,7 @@ export class Question {
 
 
   // ─── Game Metadata ────────────────────────────────────────────────────────────
-  gameName = 'God of War';
+  gameName: string ="";
   game: any = null;
 
   // ─── Image Modal ──────────────────────────────────────────────────────────────
@@ -49,9 +79,20 @@ export class Question {
   selectedGameFromSearch: any = null;
 
 
+  readonly pollListRessource = httpResource<PollListResponse>(() =>
+      `http://localhost:3000/api/entries`
+  );
+
+  readonly pollRessource = httpResource<PollModel>(() =>
+      `http://localhost:3000/api/entries/${this.id()}`
+  );
   
+  readonly IGDBRessource = httpResource<IGDB>(() =>
+      `http://localhost:3000/api/games/${this.pollRessource.value()?.name}`
+  );
 
 
+ 
 
 
 ngOnInit(): void {
@@ -68,7 +109,6 @@ ngOnInit(): void {
 
 
     this.Poll.getPollById(pollId).subscribe(data => {
-      this.poll = data;
       this.gameName = data.name;
 
       this.Poll.getGameByName(this.gameName).subscribe(gameData => {
@@ -87,16 +127,16 @@ ngOnInit(): void {
           });
     });
 
-    this.Poll.getPolls().subscribe(data => {
-      this.polls = data;
-    });
+
   }
 
 
 
   // ─── Image Viewer ─────────────────────────────────────────────────────────────
-  openImage(url: string): void {
+  openImage(url: string | undefined | null): void {
+    if (url !== undefined){
     this.selectedImage = url;
+    }
   }
 
   closeImage(): void {
@@ -136,7 +176,6 @@ ngOnInit(): void {
   goToNextPoll(): void {
     if (!this.pollId || this.polls.length === 0) return;
 
-
     if (this.nextPoll) {
       this.router.navigate(['/question', this.nextPoll._id]);
     } else {
@@ -147,35 +186,11 @@ ngOnInit(): void {
   goToPreviousPoll(): void {
     if (!this.pollId || this.polls.length === 0) return;
 
-    
-
     if (this.previousPoll) {
       this.router.navigate(['/question', this.previousPoll._id]); 
     } else {
       console.log('No next poll available.');
     }
-  }
-
-
-
-  get firstScreenshot() {
-    return this.game?.screenshots?.[0] || null;
-  }
-
-  get secondScreenshot() {
-    return this.game?.screenshots?.[1] || null;
-  }
-
-  get thirdScreenshot() {
-    return this.game?.screenshots?.[2] || null;
-  }
-
-  get fourthScreenshot() {
-    return this.game?.screenshots?.[3] || null;
-  }
-
-  get fifthScreenshot() {
-    return this.game?.screenshots?.[4] || null;
   }
 
 }

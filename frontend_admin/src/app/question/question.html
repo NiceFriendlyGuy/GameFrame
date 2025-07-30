@@ -1,5 +1,8 @@
 <div class="question-container">
 
+    <pre>{{pollRessource.value() | json}}</pre>
+    {{IGDBRessource.value() | json}}
+
     @if(!isLoading){
     <div class="question">
         <!--<h2>{{poll?.question}}</h2>-->
@@ -8,8 +11,8 @@
             [alt]="currentGuessScreenshot" />
         <div>
         <div class="screenshot-buttons">
-            @for (screenshot of screenshots; track screenshot.url) {
-                <button (click)="selectImage(screenshot.url)">{{ $index}}</button>
+            @for (screenshot of IGDBRessource.value()?.screenshots; track screenshot) {
+                <button (click)="selectImage(screenshot.url)">{{$index}}</button>
             }
         </div>
         <div class="navButtons">
@@ -33,25 +36,25 @@
     </div>
     }
 
-    <h2>The correct answer is: {{poll?.correctAnswer}} !</h2>
+    <h2>The correct answer is: {{pollRessource.value()?.correctAnswer}} !</h2>
 
 
     <div class="gameShowcase">
         <div class="gameCover">
-            <h2>{{ game?.name }}</h2>
-            <img [src]="game?.cover" (click)="openImage(game?.cover)" [src]="game.cover" alt="cover" />
+            <h2>{{ pollRessource.value()?.name }}</h2>
+            <img [src]="IGDBRessource.value()?.cover" (click)="openImage(IGDBRessource.value()?.cover)" [src]="game.cover" alt="cover" />
         </div>
         <div class="image-grids">
             <h3>Artworks</h3>
             <div class="image-grid">
-                @for (art of game?.artworks; track art.id) {
+                @for (art of IGDBRessource.value()?.artworks; track art) {
                 <img [src]="art.url" (click)="openImage(art.url)" [alt]="'artwork'" />
                 }
             </div>
 
             <h3>Screenshots</h3>
             <div class="image-grid">
-                @for (shot of game?.screenshots; track shot.id) {
+                @for (shot of IGDBRessource.value()?.screenshots; track shot) {
                 <img [src]="shot.url" (click)="openImage(shot.url)" [alt]="'screenshot'" />
                 }
             </div>
