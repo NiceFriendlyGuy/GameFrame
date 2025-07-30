@@ -1,7 +1,5 @@
 <div class="question-container">
 
-    <pre>{{pollRessource.value() | json}}</pre>
-    {{IGDBRessource.value() | json}}
 
     @if(!isLoading){
     <div class="question">
@@ -16,10 +14,10 @@
             }
         </div>
         <div class="navButtons">
-            @if(previousPoll){
+            @if(previousPoll()?._id){
             <button (click)="goToPreviousPoll()"><<</button>
             }
-            @if(nextPoll){
+            @if(nextPoll()?._id){
             <button (click)="goToNextPoll()">>></button>
             }
         </div>
@@ -42,7 +40,7 @@
     <div class="gameShowcase">
         <div class="gameCover">
             <h2>{{ pollRessource.value()?.name }}</h2>
-            <img [src]="IGDBRessource.value()?.cover" (click)="openImage(IGDBRessource.value()?.cover)" [src]="game.cover" alt="cover" />
+            <img [src]="IGDBRessource.value()?.cover" (click)="openImage(IGDBRessource.value()?.cover)" [src]="IGDBRessource.value()?.cover" alt="cover" />
         </div>
         <div class="image-grids">
             <h3>Artworks</h3>
