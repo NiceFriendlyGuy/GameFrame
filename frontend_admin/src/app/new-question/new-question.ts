@@ -31,6 +31,8 @@ export class NewQuestion {
   readonly previousPoll = signal<PollModel | null>(null);
   readonly nextPoll = signal<PollModel | null>(null);
   readonly selectedGameFromSearch = signal<IGDB | null>(null);
+  readonly selectedDate = signal<Date | null>(null);
+
 
   public polls: PollModel[] = [];
 
@@ -59,6 +61,9 @@ export class NewQuestion {
       this.currentGuessScreenshot = this.IGDBRessource?.value()?.screenshots?.[0]?.url || null;
     });
 
+    effect(()=>{
+      console.log(this.selectedDate());
+    })
    
 
   }
@@ -143,9 +148,14 @@ export class NewQuestion {
   }
 
 
+  onDateChange(event: any): void {
+    this.selectedDate.set(event.value);
+  }
+
+
  createNewEntry(): void {
   if (
-    !this.gameName()
+    !this.gameName() || !this.selectedDate()
   ) {
     alert('Please fill in all required fields.');
     return;
@@ -154,7 +164,7 @@ export class NewQuestion {
   const newEntry = {
     name: this.gameName(),
     correctAnswer: this.gameName(),
-    date: new Date().toISOString() 
+    date: this.selectedDate(),
   };
   console.log('SENDING ENTRY:', newEntry);
   this.Poll.createEntry(newEntry).subscribe({
