@@ -2,15 +2,23 @@ import { Component, computed, effect, inject, signal } from '@angular/core';
 import { Poll } from '../poll';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
-import { IGDB, Screenshots } from '../common/models/IGDB';
+import { IGDB, IGDBGameList, Screenshots } from '../common/models/IGDB';
 import { httpResource } from '@angular/common/http';
-import { PollListResponse, Poll as PollModel } from '../common/models/poll';
+import { Poll as PollModel } from '../common/models/poll';
+
+import {ChangeDetectionStrategy} from '@angular/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {provideNativeDateAdapter} from '@angular/material/core';
 
 @Component({
   selector: 'app-new-question',
-  imports: [],
+  imports: [MatFormFieldModule, MatInputModule, MatDatepickerModule],
   templateUrl: './new-question.html',
-  styleUrl: './new-question.css'
+  styleUrl: './new-question.css',
+  providers: [provideNativeDateAdapter()],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NewQuestion {
 
@@ -22,24 +30,26 @@ export class NewQuestion {
   readonly id = signal(null);
   readonly previousPoll = signal<PollModel | null>(null);
   readonly nextPoll = signal<PollModel | null>(null);
+  readonly selectedGameFromSearch = signal<IGDB | null>(null);
 
   public polls: PollModel[] = [];
 
   public screenshots: Screenshots[] = [];
   public currentGuessScreenshot: string | null = null;
 
-  public isLoading: boolean = false;
+  readonly isLoading = computed(() => !this.isFullyLoaded());
+  public isSearchBoxOpen: boolean = false;
 
   public selectedImage: string | null = null;
 
-  searchQuery = '';
+  readonly searchQuery = signal<string>("");
   searchResults: any[] = [];
-  selectedGameFromSearch: any = null;
+  //selectedGameFromSearch: any = null;
   
 
 
   constructor(private router: Router) {
-    this.isLoading = true;
+    //this.isLoading = true;
 
     effect(() => {
       const poll = this.IGDBRessource.value();
@@ -50,9 +60,7 @@ export class NewQuestion {
     });
 
    
-    effect(() => {
-      this.isLoading = !this.isFullyLoaded();
-    });
+
   }
 
 
@@ -61,8 +69,15 @@ export class NewQuestion {
   });
 
   readonly isFullyLoaded = computed(() =>
-    !!this.IGDBRessource.value() && !!this.IGDBRessource.value()
+    !!this.IGDBRessource.value()
   );
+
+  readonly gameSearchResource = httpResource<IGDBGameList>(() => {
+    const query = this.searchQuery().trim();
+    return query.length > 2
+      ? `http://localhost:3000/api/search/${encodeURIComponent(query)}`
+      : undefined; // returning undefined skips the request
+  });
 
 
   ngOnInit(): void {
@@ -109,29 +124,23 @@ export class NewQuestion {
 
 
   onSearchChange(query: string): void {
-    this.searchQuery = query;
     if(query.length == 0){
-      this.searchResults = [];
-      this.selectedGameFromSearch = "";
-    }
-    else if (query.length < 3) {
-      this.searchResults = [];
+      this.isSearchBoxOpen = false;
       return;
     }
-
-    this.Poll.searchGames(query).subscribe({
-      next: results => this.searchResults = results,
-      error: err => console.error('Search error:', err)
-    });
+    else if (query.length < 3) {
+      this.isSearchBoxOpen = false;
+      return;
+    }
+    this.isSearchBoxOpen = true;
+    this.searchQuery.set(query);
   }
 
   selectGameFromSearch(game: any): void {
-    this.selectedGameFromSearch = game;
+    this.selectedGameFromSearch.set(game.name);
     this.gameName.set(game.name);
-    this.searchQuery = game.name;
-    this.searchResults = [];
+    this.isSearchBoxOpen = false;
   }
-  
 
 
  createNewEntry(): void {

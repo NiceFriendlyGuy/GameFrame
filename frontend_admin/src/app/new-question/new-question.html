@@ -1,6 +1,6 @@
 <div class="question-container">
 
-    @if(!isLoading){
+    @if(!isLoading()){
     <div class="question">
         <!--<h2>{{poll?.question}}</h2>-->
         @if(currentGuessScreenshot){
@@ -28,13 +28,12 @@
 
     <div class="game-search">
         <div class="search-box">
-            <input #inputBox type="text" [value]="searchQuery" (input)="onSearchChange(inputBox.value)"
+            <input #inputBox type="text" [value]="searchQuery()" (input)="onSearchChange(inputBox.value)"
                 placeholder="Search for a game..." class="search-input" />
 
-
-            @if (searchResults.length > 0) {
+            @if (isSearchBoxOpen) {
             <ul class="search-results">
-                @for (game of searchResults; track game.id) {
+                @for (game of gameSearchResource.value(); track game) {
                 <li (click)="selectGameFromSearch(game)">
                     {{ game.name }}
                     @if(game.image){
@@ -46,14 +45,22 @@
 
             }
         </div>
+
+        <mat-form-field>
+            <mat-label>Choose a date</mat-label>
+            <input matInput [matDatepicker]="picker">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
         <button (click)="createNewEntry()">Create New Entry</button>
     </div>
 
-    @if (selectedGameFromSearch) {
+    @if (selectedGameFromSearch()) {
     <div class="game-preview">
-        <p>You selected: {{ selectedGameFromSearch.name }}</p>
-        @if (selectedGameFromSearch.image) {
-        <img [src]="selectedGameFromSearch.image" [alt]="selectedGameFromSearch.name" />
+        <p>You selected: {{ selectedGameFromSearch() }}</p>
+        @if (IGDBRessource.value()) {
+        <img [src]="IGDBRessource.value()?.cover" [alt]="IGDBRessource.value()?.name" />
         }
     </div>
     }

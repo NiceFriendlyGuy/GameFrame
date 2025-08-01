@@ -18,3 +18,10 @@ export interface IGDB {
     artworks: Artworks[] | null;
     screenshots: Screenshots[] | null;
 }
+
+export interface IGDBGame {
+    name: string;
+    image: string | null;
+}
+
+export type IGDBGameList = IGDBGame[];
