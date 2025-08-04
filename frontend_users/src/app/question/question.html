@@ -1,0 +1,67 @@
+<div class="question-container">
+
+
+    @if(isFullyLoaded()){
+    <div class="question">
+        <!--<h2>{{poll?.question}}</h2>-->
+        @if(currentGuessScreenshot){
+        <img [src]="currentGuessScreenshot" (click)="openImage(currentGuessScreenshot!)"
+            [alt]="currentGuessScreenshot" />
+        <div>
+        <div class="screenshot-buttons">
+            @for (screenshot of IGDBRessource.value()?.screenshots?.slice(0, 5); track screenshot) {
+                <button (click)="selectImage(screenshot.url)">{{$index}}</button>
+            }
+        </div>
+        <div class="navButtons">
+            @if(previousPoll()?._id){
+            <button (click)="goToPreviousPoll()"><<</button>
+            }
+            @if(nextPoll()?._id){
+            <button (click)="goToNextPoll()">>></button>
+            }
+        </div>
+        </div>
+        }@else{
+        <h3>Loading Images...</h3>
+        }
+
+    </div>
+    @if (selectedImage) {
+    <div class="image-modal" (click)="closeImage()">
+        <img [src]="selectedImage" class="full-image" />
+        <span class="close-btn">×</span>
+    </div>
+    }
+
+    <h2>The correct answer is: {{pollRessource.value()?.correctAnswer}} !</h2>
+
+
+    <div class="gameShowcase">
+        <div class="gameCover">
+            <h2>{{ pollRessource.value()?.name }}</h2>
+            <img [src]="IGDBRessource.value()?.cover" (click)="openImage(IGDBRessource.value()?.cover)" [src]="IGDBRessource.value()?.cover" alt="cover" />
+        </div>
+        <div class="image-grids">
+            <h3>Artworks</h3>
+            <div class="image-grid">
+                @for (art of IGDBRessource.value()?.artworks; track art) {
+                <img [src]="art.url" (click)="openImage(art.url)" [alt]="'artwork'" />
+                }
+            </div>
+
+            <h3>Screenshots</h3>
+            <div class="image-grid">
+                @for (shot of IGDBRessource.value()?.screenshots; track shot) {
+                <img [src]="shot.url" (click)="openImage(shot.url)" [alt]="'screenshot'" />
+                }
+            </div>
+        </div>
+    </div>
+
+
+
+    }@else{
+    <h2>Loading...</h2>
+    }
+</div>
