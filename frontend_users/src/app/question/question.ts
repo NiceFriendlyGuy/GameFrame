@@ -1,7 +1,7 @@
 import { httpResource } from '@angular/common/http';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IGDB, IGDBGameList, Screenshots } from '../common/models/IGDB';
+import { Cover, IGDB, IGDBGameList, Screenshots } from '../common/models/IGDB';
 import { PollListResponse, Poll as PollModel } from '../common/models/poll';
 
 @Component({
@@ -18,6 +18,7 @@ export class Question {
   readonly previousPoll = signal<PollModel | null>(null);
   readonly nextPoll = signal<PollModel | null>(null);
   readonly selectedGameFromSearch = signal<IGDB | null>(null);
+  readonly selectedGameCoverFromSearch = signal<Cover | null>(null);
 
 
   public polls: PollModel[] = [];
@@ -154,8 +155,17 @@ export class Question {
   }
 
   selectGameFromSearch(game: any): void {
+    console.log(game);
     this.selectedGameFromSearch.set(game.name);
+    this.selectedGameCoverFromSearch.set(game.image);
     this.gameName.set(game.name);
     this.isSearchBoxOpen = false;
   }
+
+  confirmSelectedAnswerFromSearch(selectedGame: IGDB | null): void{
+    //this.selectAnswer(selectedGame?.name);
+    this.selectedGameFromSearch.set(null);
+    this.searchQuery.set("");
+  }
+
 }

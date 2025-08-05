@@ -209,7 +209,6 @@ export class PollComponent {
     this.selectAnswer(this.selectedGameFromSearch.name);
     this.selectedGameFromSearch = "";
     this.searchQuery = "";
-
   }
 
   

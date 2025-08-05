@@ -34,6 +34,56 @@
     </div>
     }
 
+    <div class="game-search">
+        <div class="search-box">
+            <input #inputBox type="text" [value]="searchQuery()" (input)="onSearchChange(inputBox.value)"
+                placeholder="Search for a game..." class="search-input" />
+
+            @if (isSearchBoxOpen) {
+            <ul class="search-results">
+                @for (game of gameSearchResource.value(); track game) {
+                <li (click)="selectGameFromSearch(game)">
+                    {{ game.name }}
+                    @if(game.image){
+                    <img [src]="game.image" width="15%">
+                    }
+                </li>
+                }
+            </ul>
+
+            }
+        </div>
+    </div>
+
+    @if (selectedGameFromSearch()) {
+    <div class="game-preview">
+        <p>You selected: {{ selectedGameFromSearch()?.name }}</p>
+        @if (selectedGameCoverFromSearch()) {
+        <img [src]="selectedGameCoverFromSearch()" [alt]="selectedGameFromSearch()?.name" />
+        }
+    </div>
+    <button (click)="confirmSelectedAnswerFromSearch(selectedGameFromSearch())">Final answer ?</button>
+    }@else{
+
+    <!--<div>
+        @if(guesses.length > 0){
+        <p class="centeredText">Your guesses:</p>
+        <ul>
+            @for (g of guesses; track g) {
+            <li>
+                @if (pollRessource.value()?.correctAnswer === g) {
+                <p>{{ g }} ✅</p>
+                } @else {
+                <p>{{ g }} ❌</p>
+                }
+            </li>
+            }
+        </ul>
+        }
+    </div>
+-->
+    }
+
     <h2>The correct answer is: {{pollRessource.value()?.correctAnswer}} !</h2>
 
 
