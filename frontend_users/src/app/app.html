@@ -1,2 +1,23 @@
+<header class="main-header">
+    <nav class="nav-bar">
+      <div class="nav-buttons">
+      <button (click)="navigateTo('home')">Home</button>
+      <button (click)="navigateTo('questions')">Questions</button>
+      <!--<button>Stats</button>
+      <button>About</button>-->
+      </div>
+      <div class="logged-user">
+        @if (user) {
+          <p>Welcome back, {{ user.email }}!</p>
+          <button (click)="logout()">Logout</button>
+        }@else {
+          <p>Welcome, guest!</p>
+          <button (click)="navigateTo('login')">Login</button>
+        }
+      </div>
+      
 
+    </nav>
+
+</header>
 <router-outlet />

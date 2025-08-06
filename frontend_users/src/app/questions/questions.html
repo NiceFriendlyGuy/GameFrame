@@ -4,7 +4,7 @@
     @for(question of questionListRessource.value(); track question){
       <div>
       <button (click)="navigateTo('question/' + question?._id)">
-        {{ question?.date | date: 'dd/MM/yyyy' }} <!--{{ getEmojiStatus(question._id) }}-->
+        {{ question?.date | date: 'dd/MM/yyyy' }} {{ getEmojiStatus(question._id) }}
       </button>
       {{question?._id}}
       </div>
