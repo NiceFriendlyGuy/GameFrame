@@ -10,7 +10,11 @@
         <div>
         <div class="screenshot-buttons">
             @for (screenshot of IGDBRessource.value()?.screenshots?.slice(0, 5); track screenshot) {
+                @if ($index <= guesses().length || userQuestionState()?.answered) {
                 <button (click)="selectImage(screenshot.url)">{{$index}}</button>
+                }@else {
+                    <button disabled>{{ $index }}</button>
+                }
             }
         </div>
         <div class="navButtons">
@@ -34,6 +38,7 @@
     </div>
     }
 
+    @if(!userQuestionState()?.answered ){
     <div class="game-search">
         <div class="search-box">
             <input #inputBox type="text" [value]="searchQuery()" (input)="onSearchChange(inputBox.value)"
@@ -54,7 +59,7 @@
             }
         </div>
     </div>
-
+}
     @if (selectedGameFromSearch()) {
     <div class="game-preview">
         <p>You selected: {{ selectedGameFromSearch()?.name }}</p>
@@ -62,53 +67,52 @@
         <img [src]="selectedGameCoverFromSearch()" [alt]="selectedGameFromSearch()?.name" />
         }
     </div>
-    <button (click)="confirmSelectedAnswerFromSearch(selectedGameFromSearch())">Final answer ?</button>
+    <button (click)="confirmSelectedAnswerFromSearch(selectedGameFromSearch()?.name)">Final answer ?</button>
     }@else{
 
-    <!--<div>
-        @if(guesses.length > 0){
+    <div>
+        @if(guesses().length > 0){
         <p class="centeredText">Your guesses:</p>
         <ul>
-            @for (g of guesses; track g) {
+            @for (g of guesses(); track g) {
             <li>
-                @if (pollRessource.value()?.correctAnswer === g) {
-                <p>{{ g }} ✅</p>
+                @if (pollRessource.value()?.correctAnswer === g.answer) {
+                <p>{{ g.answer }} ✅</p>
                 } @else {
-                <p>{{ g }} ❌</p>
+                <p>{{ g.answer }} ❌</p>
                 }
             </li>
             }
         </ul>
         }
     </div>
--->
+
     }
-
+    @if(userQuestionState()?.answered ?? false){
     <h2>The correct answer is: {{pollRessource.value()?.correctAnswer}} !</h2>
-
-
-    <div class="gameShowcase">
-        <div class="gameCover">
-            <h2>{{ pollRessource.value()?.name }}</h2>
-            <img [src]="IGDBRessource.value()?.cover" (click)="openImage(IGDBRessource.value()?.cover)" [src]="IGDBRessource.value()?.cover" alt="cover" />
-        </div>
-        <div class="image-grids">
-            <h3>Artworks</h3>
-            <div class="image-grid">
-                @for (art of IGDBRessource.value()?.artworks; track art) {
-                <img [src]="art.url" (click)="openImage(art.url)" [alt]="'artwork'" />
-                }
+    
+        <div class="gameShowcase">
+            <div class="gameCover">
+                <h2>{{ pollRessource.value()?.name }}</h2>
+                <img [src]="IGDBRessource.value()?.cover" (click)="openImage(IGDBRessource.value()?.cover)" [src]="IGDBRessource.value()?.cover" alt="cover" />
             </div>
+            <div class="image-grids">
+                <h3>Artworks</h3>
+                <div class="image-grid">
+                    @for (art of IGDBRessource.value()?.artworks; track art) {
+                    <img [src]="art.url" (click)="openImage(art.url)" [alt]="'artwork'" />
+                    }
+                </div>
 
-            <h3>Screenshots</h3>
-            <div class="image-grid">
-                @for (shot of IGDBRessource.value()?.screenshots; track shot) {
-                <img [src]="shot.url" (click)="openImage(shot.url)" [alt]="'screenshot'" />
-                }
+                <h3>Screenshots</h3>
+                <div class="image-grid">
+                    @for (shot of IGDBRessource.value()?.screenshots; track shot) {
+                    <img [src]="shot.url" (click)="openImage(shot.url)" [alt]="'screenshot'" />
+                    }
+                </div>
             </div>
         </div>
-    </div>
-
+    }
 
 
     }@else{

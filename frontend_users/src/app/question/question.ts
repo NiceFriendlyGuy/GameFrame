@@ -1,8 +1,10 @@
-import { httpResource } from '@angular/common/http';
+import { HttpHeaders, httpResource } from '@angular/common/http';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Cover, IGDB, IGDBGameList, Screenshots } from '../common/models/IGDB';
 import { PollListResponse, Poll as PollModel } from '../common/models/poll';
+import { Auth } from '../auth';
+import { QuestionService } from '../question.service';
 
 @Component({
   selector: 'app-question',
@@ -20,16 +22,32 @@ export class Question {
   readonly selectedGameFromSearch = signal<IGDB | null>(null);
   readonly selectedGameCoverFromSearch = signal<Cover | null>(null);
 
+  readonly user;
+
+  readonly guesses = computed(() => {
+    return this.userQuestionState()?.guesses ?? [];
+  });
+
+  readonly userQuestionState = computed(() => {
+    const allAnswered = this.answeredQuestionsResource.value();
+    const currentId = this.id();
+
+    if (!allAnswered || !currentId) return [];
+
+    const entry = allAnswered.find(p => p.pollId === currentId);
+    return entry;
+  });
+
+
 
   public polls: PollModel[] = [];
 
   public screenshots: Screenshots[] = [];
   public currentGuessScreenshot: string | null = null;
 
-  //public isLoading: boolean = false;
 
   readonly isFullyLoaded = computed(() =>
-    !!this.pollRessource.value() && !!this.IGDBRessource.value()
+    !!this.pollRessource.value() && !!this.IGDBRessource.value() && !!this.userQuestionState
   );
 
   readonly searchQuery = signal<string>("");
@@ -39,15 +57,16 @@ export class Question {
 
   public selectedImage: string | null = null;
 
-  constructor(private router: Router) {
-    //this.isLoading = true;
+  constructor(private router: Router, private auth:Auth, private questionService: QuestionService,) {
+
+    this.user = this.auth.getUserEmail();
 
     effect(() => {
       const poll = this.pollRessource.value();
       if (!poll) return;
       this.gameName.set(poll.name);
       this.screenshots = (this.IGDBRessource?.value()?.screenshots || []).slice(0, 5);
-      this.currentGuessScreenshot = this.IGDBRessource?.value()?.screenshots?.[0]?.url || null;
+      this.currentGuessScreenshot = this.screenshots[this.guesses().length]?.url;
     });
 
     effect(() => {
@@ -74,9 +93,13 @@ export class Question {
     });
 
 
-    /*effect(() => {
-      this.isLoading = !this.isFullyLoaded();
-    });*/
+    effect(() => {
+      const answered = this.answeredQuestionsResource.value();
+      if (answered) {
+        console.log('Answered polls:', answered);
+      }
+    });
+
   }
 
   readonly pollListRessource = httpResource<PollListResponse>(() =>
@@ -96,8 +119,20 @@ export class Question {
     const query = this.searchQuery().trim();
     return query.length > 2
       ? `http://localhost:3000/api/search/${encodeURIComponent(query)}`
-      : undefined; // returning undefined skips the request
+      : undefined; 
   });
+
+  readonly answeredQuestionsResource = httpResource<any[]>(() => {
+    const email = this.auth.getUserEmail()?.email;
+    return email
+      ? {
+          url: `http://localhost:3000/api/users/answeredPolls`,
+          headers: new HttpHeaders({ 'x-user-email': email })
+        }
+      : undefined;
+  });
+
+
   
 
   ngOnInit(): void {
@@ -155,17 +190,40 @@ export class Question {
   }
 
   selectGameFromSearch(game: any): void {
-    console.log(game);
-    this.selectedGameFromSearch.set(game.name);
+    this.selectedGameFromSearch.set(game);
     this.selectedGameCoverFromSearch.set(game.image);
     this.gameName.set(game.name);
     this.isSearchBoxOpen = false;
   }
 
-  confirmSelectedAnswerFromSearch(selectedGame: IGDB | null): void{
-    //this.selectAnswer(selectedGame?.name);
-    this.selectedGameFromSearch.set(null);
-    this.searchQuery.set("");
-  }
+  confirmSelectedAnswerFromSearch(selectedGame?: string) {
+  if (!selectedGame) return;
+  this.selectAnswer(selectedGame);
+  this.selectedGameFromSearch.set(null);
+  this.searchQuery.set('');
+}
+
+
+  selectAnswer(answer: string) {
+  const id = this.id();
+  if (!id) return;
+
+
+  this.questionService.addGuess(id, answer).subscribe({
+    next: () => {
+      this.answeredQuestionsResource.reload();
+
+      const correct = this.pollRessource.value()?.correctAnswer;
+      if (correct && answer === correct || this.guesses().length >= 4) {
+        this.questionService.markPollAsAnswered(id).subscribe({
+          next: () => this.answeredQuestionsResource.reload(),
+          error: e => console.error('mark answered failed', e)
+        });
+      }
+    },
+    error: e => console.error('add guess failed', e)
+  });
+}
+
 
 }
