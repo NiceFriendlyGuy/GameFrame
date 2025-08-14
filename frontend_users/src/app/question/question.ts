@@ -66,7 +66,9 @@ export class Question {
       if (!poll) return;
       this.gameName.set(poll.name);
       this.screenshots = (this.IGDBRessource?.value()?.screenshots || []).slice(0, 5);
-      this.currentGuessScreenshot = this.screenshots[this.guesses().length]?.url;
+      const idx = Math.min(this.guesses().length, Math.max(this.screenshots.length - 1, 0));
+      this.currentGuessScreenshot = this.screenshots[idx]?.url ?? null;
+
     });
 
     effect(() => {
@@ -93,12 +95,6 @@ export class Question {
     });
 
 
-    effect(() => {
-      const answered = this.answeredQuestionsResource.value();
-      if (answered) {
-        console.log('Answered polls:', answered);
-      }
-    });
 
   }
 

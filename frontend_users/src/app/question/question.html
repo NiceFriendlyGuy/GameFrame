@@ -1,9 +1,9 @@
 <div class="question-container">
 
-
     @if(isFullyLoaded()){
     <div class="question">
         <!--<h2>{{poll?.question}}</h2>-->
+        <h2>Guess the game !</h2>
         @if(currentGuessScreenshot){
         <img [src]="currentGuessScreenshot" (click)="openImage(currentGuessScreenshot!)"
             [alt]="currentGuessScreenshot" />
@@ -60,6 +60,8 @@
         </div>
     </div>
 }
+<div>
+        
     @if (selectedGameFromSearch()) {
     <div class="game-preview">
         <p>You selected: {{ selectedGameFromSearch()?.name }}</p>
@@ -68,10 +70,9 @@
         }
     </div>
     <button (click)="confirmSelectedAnswerFromSearch(selectedGameFromSearch()?.name)">Final answer ?</button>
-    }@else{
+    }
 
-    <div>
-        @if(guesses().length > 0){
+    @if(guesses().length > 0){
         <p class="centeredText">Your guesses:</p>
         <ul>
             @for (g of guesses(); track g) {
@@ -87,7 +88,6 @@
         }
     </div>
 
-    }
     @if(userQuestionState()?.answered ?? false){
     <h2>The correct answer is: {{pollRessource.value()?.correctAnswer}} !</h2>
     

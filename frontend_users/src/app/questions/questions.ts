@@ -43,7 +43,6 @@ export class Questions {
 
 
   navigateTo(page: string): void {
-    console.log("Going to " + page);
     this.router.navigate([page]);
   }
 
