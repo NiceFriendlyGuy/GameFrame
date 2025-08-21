@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = 'your-super-secret-key'; // To change
+const JWT_SECRET = process.env.JWT_SECRET;
 
 module.exports = {
   authenticateToken,

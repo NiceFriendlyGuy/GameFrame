@@ -7,8 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class Poll {
 
-  private apiUrl = 'http://localhost:3000/api/entries';
-  private apiAdminUrl = 'http://localhost:3000/api/admin/entries';
+  private apiUrl = 'https://api.gameframe.ch/api/entries';
+  private apiAdminUrl = 'https://api.gameframe.ch/api/admin/entries';
 
 
   constructor(private http: HttpClient) { }
@@ -22,11 +22,11 @@ export class Poll {
   }
 
   getGameByName(name: string): Observable<any> {
-    return this.http.get<any>(`http://localhost:3000/api/games/${name}`);
+    return this.http.get<any>(`https://api.gameframe.ch/api/games/${name}`);
   }
 
   searchGames(query: string): Observable<any[]> {
-    return this.http.get<any[]>(`http://localhost:3000/api/search/${encodeURIComponent(query)}`);
+    return this.http.get<any[]>(`https://api.gameframe.ch/api/search/${encodeURIComponent(query)}`);
   }
 
   createEntry(question: any): Observable<any> {

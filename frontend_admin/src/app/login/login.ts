@@ -39,7 +39,7 @@ export class Login {
           return;
         }
 
-        localStorage.setItem('token', token);
+        localStorage.setItem('token', res.token);
 
         // Decode token payload to extract role
         const payload = JSON.parse(atob(token.split('.')[1]));
