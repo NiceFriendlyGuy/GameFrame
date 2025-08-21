@@ -1,1 +1,0 @@
-curl -X POST "https://id.twitch.tv/oauth2/token" \ -d "client_id=ldaq3ayh4b3r8du8l45yavob91q3fa" \ -d "client_secret=1ac7j8ldbykpsji897fjw3gdkzec82" \ -d "grant_type=client_credentials"
