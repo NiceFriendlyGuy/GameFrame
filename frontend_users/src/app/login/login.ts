@@ -21,7 +21,7 @@ export class Login {
   constructor(private http: HttpClient, private router: Router) {}
 
   onLogin() {
-    this.http.post<any>('http://localhost:3000/api/auth/login', {
+    this.http.post<any>('https://api.gameframe.ch/api/auth/login', {
       email: this.email,
       password: this.password
     }).subscribe({
@@ -40,7 +40,7 @@ export class Login {
   }
 
   onRegister() {
-    this.http.post<any>('http://localhost:3000/api/auth/register', {
+    this.http.post<any>('https://api.gameframe.ch/api/auth/register', {
       email: this.regEmail,
       password: this.regPassword
     }).subscribe({

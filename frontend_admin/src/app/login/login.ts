@@ -31,7 +31,7 @@ export class Login {
 
     const { email, password } = this.loginForm.value;
 
-    this.http.post<{ token: string }>('http://localhost:3000/api/auth/login', { email, password }).subscribe({
+    this.http.post<{ token: string }>('https://api.gameframe.ch/api/auth/login', { email, password }).subscribe({
       next: (res) => {
         const token = res.token;
         if (!token) {

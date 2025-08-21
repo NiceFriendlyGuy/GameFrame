@@ -60,7 +60,7 @@
         </div>
     </div>
 }
-<div>
+<div class="gameGuess">
         
     @if (selectedGameFromSearch()) {
     <div class="game-preview">
@@ -86,7 +86,7 @@
             }
         </ul>
         }
-    </div>
+</div>
 
     @if(userQuestionState()?.answered ?? false){
     <h2>The correct answer is: {{pollRessource.value()?.correctAnswer}} !</h2>

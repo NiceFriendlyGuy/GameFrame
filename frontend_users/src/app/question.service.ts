@@ -5,7 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class QuestionService {
-  private userApiUrl = 'http://localhost:3000/api/users';
+  private userApiUrl = 'https://api.gameframe.ch/api/users';
   constructor(private http: HttpClient, private auth: Auth) {}
 
   private headers() {

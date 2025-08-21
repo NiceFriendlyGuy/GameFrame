@@ -95,26 +95,25 @@ export class Question {
     });
 
 
-
   }
 
   readonly pollListRessource = httpResource<PollListResponse>(() =>
-    `http://localhost:3000/api/entries`
+    `https://api.gameframe.ch/api/entries`
   );
 
   readonly pollRessource = httpResource<PollModel>(() =>
-    `http://localhost:3000/api/entries/${this.id()}`
+    `https://api.gameframe.ch/api/entries/${this.id()}`
   );
 
   readonly IGDBRessource = httpResource<IGDB>(() => {
     const poll = this.pollRessource.value();
-    return poll?.name ? `http://localhost:3000/api/games/${poll.name}` : undefined;
+    return poll?.name ? `https://api.gameframe.ch/api/games/${poll.name}` : undefined;
   });
 
   readonly gameSearchResource = httpResource<IGDBGameList>(() => {
     const query = this.searchQuery().trim();
     return query.length > 2
-      ? `http://localhost:3000/api/search/${encodeURIComponent(query)}`
+      ? `https://api.gameframe.ch/api/search/${encodeURIComponent(query)}`
       : undefined; 
   });
 
@@ -122,7 +121,7 @@ export class Question {
     const email = this.auth.getUserEmail()?.email;
     return email
       ? {
-          url: `http://localhost:3000/api/users/answeredPolls`,
+          url: `https://api.gameframe.ch/api/users/answeredPolls`,
           headers: new HttpHeaders({ 'x-user-email': email })
         }
       : undefined;

@@ -70,7 +70,7 @@ export class NewQuestion {
 
 
   readonly IGDBRessource = httpResource<IGDB>(() => {
-    return this.gameName ? `http://localhost:3000/api/games/${this.gameName()}` : undefined;
+    return this.gameName ? `https://api.gameframe.ch/api/games/${this.gameName()}` : undefined;
   });
 
   readonly isFullyLoaded = computed(() =>
@@ -80,7 +80,7 @@ export class NewQuestion {
   readonly gameSearchResource = httpResource<IGDBGameList>(() => {
     const query = this.searchQuery().trim();
     return query.length > 2
-      ? `http://localhost:3000/api/search/${encodeURIComponent(query)}`
+      ? `https://api.gameframe.ch/api/search/${encodeURIComponent(query)}`
       : undefined; // returning undefined skips the request
   });
 

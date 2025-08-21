@@ -13,13 +13,14 @@ import { Auth } from '../auth';
 })
 export class Questions {
 
+
   public user: any = null;
 
   constructor(private router: Router, private auth:Auth) {}
 
 
   readonly questionListRessource = httpResource<QuestionList>(() =>
-    `http://localhost:3000/api/entries`
+    `https://api.gameframe.ch/api/entries`
   );
 
   readonly answeredQuestionsResource = httpResource<any[]>(() => {
@@ -27,7 +28,7 @@ export class Questions {
     if (!email) return undefined;
 
     return {
-      url: `http://localhost:3000/api/users/answeredPolls`,
+      url: `https://api.gameframe.ch/api/users/answeredPolls`,
       headers: new HttpHeaders({
         'x-user-email': email
       })

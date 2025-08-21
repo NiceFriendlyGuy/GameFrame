@@ -71,16 +71,16 @@ export class Question {
   }
 
   readonly pollListRessource = httpResource<PollListResponse>(() =>
-    `http://localhost:3000/api/entries`
+    `https://api.gameframe.ch/api/entries`
   );
 
   readonly pollRessource = httpResource<PollModel>(() =>
-    `http://localhost:3000/api/entries/${this.id()}`
+    `https://api.gameframe.ch/api/entries/${this.id()}`
   );
 
   readonly IGDBRessource = httpResource<IGDB>(() => {
     const poll = this.pollRessource.value();
-    return poll?.name ? `http://localhost:3000/api/games/${poll.name}` : undefined;
+    return poll?.name ? `https://api.gameframe.ch/api/games/${poll.name}` : undefined;
   });
 
   readonly isFullyLoaded = computed(() =>

@@ -19,7 +19,7 @@ export class Dashboard {
   constructor(private router: Router) {}
 
   readonly pollRessource = httpResource<PollListResponse>(() =>
-    `http://localhost:3000/api/entries`
+    `https://api.gameframe.ch/api/entries`
   );
 
   readonly userListResource = httpResource<UserListResponse>(() => {
@@ -27,7 +27,7 @@ export class Dashboard {
     if (!token) throw new Error('No auth token found.');
 
     return {
-      url: `http://localhost:3000/api/admin/users/findAll`,
+      url: `https://api.gameframe.ch/api/admin/users/findAll`,
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`

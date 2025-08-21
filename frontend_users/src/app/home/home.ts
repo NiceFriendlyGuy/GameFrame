@@ -21,7 +21,7 @@ export class Home {
 
 
   readonly latestQuestionResource = httpResource<Question>(() => 
-    'http://localhost:3000/api/entries/latest'
+    'https://api.gameframe.ch/api/entries/latest'
   );
 
   navigateTo(page: string): void {

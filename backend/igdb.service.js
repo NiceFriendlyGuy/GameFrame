@@ -1,7 +1,6 @@
 const axios = require('axios');
+require('dotenv').config();
 
-const CLIENT_ID = 'ldaq3ayh4b3r8du8l45yavob91q3fa';
-const CLIENT_SECRET = '1ac7j8ldbykpsji897fjw3gdkzec82';
 let accessToken = null;
 let tokenExpiresAt = 0;
 
@@ -10,8 +9,8 @@ async function getAccessToken() {
 
   const response = await axios.post('https://id.twitch.tv/oauth2/token', null, {
     params: {
-      client_id: CLIENT_ID,
-      client_secret: CLIENT_SECRET,
+      client_id: process.env.CLIENT_ID,
+      client_secret: process.env.CLIENT_SECRET,
       grant_type: 'client_credentials'
     }
   });
@@ -30,7 +29,7 @@ async function fetchGameByName(gameName) {
     `search "${gameName}"; fields id, name; limit 1;`,
     {
       headers: {
-        'Client-ID': CLIENT_ID,
+        'Client-ID': process.env.CLIENT_ID,
         Authorization: `Bearer ${token}`,
         'Content-Type': 'text/plain'
       }
@@ -48,7 +47,7 @@ async function fetchGameByName(gameName) {
       `fields url, image_id; where game = ${gameId};`,
       {
         headers: {
-          'Client-ID': CLIENT_ID,
+          'Client-ID': process.env.CLIENT_ID,
           Authorization: `Bearer ${token}`,
           'Content-Type': 'text/plain'
         }
@@ -83,7 +82,7 @@ async function fetchGamesByQuery(query) {
     `search "${query}"; fields id, name, cover.url; limit 10;`,
     {
       headers: {
-        'Client-ID': CLIENT_ID,
+        'Client-ID': process.env.CLIENT_ID,
         Authorization: `Bearer ${token}`,
         'Content-Type': 'text/plain'
       }
