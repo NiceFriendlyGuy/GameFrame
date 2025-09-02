@@ -64,8 +64,6 @@ angular-polling-app/
 
 │── backend/ 
 
-│── docker/ 
-
 │── README.md 
 
 #### Note that frontend is a deprecated folder of the now frontend-users made with angular 19. It won't function properly.
