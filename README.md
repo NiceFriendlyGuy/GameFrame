@@ -56,7 +56,7 @@ This project demonstrates **scalable architecture, modern Angular practices, and
 
 ## 📂 Architecture  
 
-angular-polling-app/
+Gameframe/
 
 │── frontend-users/ 
 
